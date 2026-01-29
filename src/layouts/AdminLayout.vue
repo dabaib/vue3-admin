@@ -44,6 +44,11 @@ const toggleCollapse = () => {
   isCollapse.value = !isCollapse.value
 }
 
+// 全屏切换
+import { useFullscreen } from '@vueuse/core'
+
+const { isFullscreen, toggle } = useFullscreen()
+
 // 处理菜单点击
 const handleMenuSelect = (index: string) => {
   router.push(index)
@@ -135,8 +140,11 @@ const handleUserCommand = (command: string) => {
 
         <div class="header-right">
           <!-- 全屏 -->
-          <el-tooltip content="全屏" placement="bottom">
-            <el-icon class="header-icon"><FullScreen /></el-icon>
+          <el-tooltip :content="isFullscreen ? '退出全屏' : '全屏'" placement="bottom">
+            <el-icon class="header-icon" @click="toggle">
+              <FullScreen v-if="!isFullscreen" />
+              <Aim v-else />
+            </el-icon>
           </el-tooltip>
 
           <!-- 消息 -->
