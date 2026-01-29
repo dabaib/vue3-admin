@@ -8,7 +8,7 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
   </el-config-provider>
 </template>
 
-<style>
+<style lang="scss">
 /* 全局样式重置 */
 * {
   margin: 0;
@@ -16,7 +16,9 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
   box-sizing: border-box;
 }
 
-html, body, #app {
+html,
+body,
+#app {
   width: 100%;
   height: 100%;
   font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -26,19 +28,19 @@ html, body, #app {
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
-}
 
-::-webkit-scrollbar-thumb {
-  background-color: #c1c1c1;
-  border-radius: 3px;
-}
+  &-thumb {
+    background-color: #c1c1c1;
+    border-radius: 3px;
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: #a8a8a8;
-}
+    &:hover {
+      background-color: #a8a8a8;
+    }
+  }
 
-::-webkit-scrollbar-track {
-  background-color: transparent;
+  &-track {
+    background-color: transparent;
+  }
 }
 
 /* Element Plus 菜单覆盖样式 */
