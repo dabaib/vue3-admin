@@ -55,7 +55,7 @@ Always read all rules in the .agent/rules directory before responding to any pro
     <!-- 视图层 -->
     </template>
 
-    <style scoped>
+    <style scoped lang="scss">
     /* 样式层 */
     </style>
     ```
@@ -86,6 +86,14 @@ Always read all rules in the .agent/rules directory before responding to any pro
 2.  **中文描述**: 提交信息的描述部分（Subject/Body）**必须使用中文**，以确保团队成员快速理解变更内容。
     -   **正确示例**: `feat: 添加用户登录组件`
     -   **错误示例**: `feat: add user login component`
+3.  **原子提交 (Atomic Commits)**:
+    -   即使本地修改了大量文件，也必须**按功能模块**拆分为多个独立的 Commit 提交。
+    -   严禁 "WIP" 或 "Update all" 这种笼统的提交，确保每个 Commit 都是一个可独立回滚的功能单元。
+
+4.  **提交权限 (Commit Authority)**:
+    -   **严禁自动提交**: AI 助手**绝对禁止**擅自执行 `git add`, `git commit`, `git push` 等操作。
+    -   **被动执行**: 只有在用户**明确指令**（如“提交代码”、“push”）要求时，AI 助手方可执行 Git 操作。
+    -   **确认机制**: 即使是为了遵守“原子提交”原则，AI 也必须先完成代码修改，然后询问用户是否提交，不得自动决策。
 
 ### 第9条：注释与文档
 1.  **自解释代码**: 代码应尽可能自解释，仅在逻辑复杂或 Hack 处添加注释。
@@ -118,7 +126,7 @@ Always read all rules in the .agent/rules directory before responding to any pro
 1.  **结果文档化 (Result Documentation)**:
     *   任何实际输出结果（Output）或功能说明文档，必须直接存放在对应的功能目录下（`src/views/xxx/` 或 `src/components/xxx/`），禁止散落在根目录。
 2.  **视图目录结构 (View Directory Structure)**:
-    *   **命名**: `src/views` 下必须以**功能名称**（kebab-case）创建文件夹。
+    *   **命名**: `src/views` 下必须以**功能名称**（kebab-case）创建文件夹。提交
     *   **拆分**: 功能内部的子组件（Sub-components）必须存放在该功能目录下的 `modules` 子文件夹中。
         -   **强制拆分**: 页面中的弹窗（Dialog）、抽屉（Drawer）或复杂表单，**必须**拆分为独立的子组件，禁止直接写在 `index.vue` 中。
     *   **入口**: 目录下必须包含 `index.vue` 作为入口。
