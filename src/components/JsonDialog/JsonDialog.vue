@@ -106,7 +106,7 @@ const handleCancel = () => {
   </el-dialog>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .dialog-footer {
   display: flex;
   justify-content: flex-end;

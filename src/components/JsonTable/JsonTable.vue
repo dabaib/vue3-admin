@@ -448,39 +448,39 @@ defineExpose({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .json-table {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-}
 
-.json-table__toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 0 16px 0;
-  flex-shrink: 0;
-}
+  &__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 16px 0;
+    flex-shrink: 0;
+  }
 
-.json-table__toolbar-left,
-.json-table__toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  &__toolbar-left,
+  &__toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-.json-table__body {
-  flex: 1;
-  overflow: hidden;
-}
+  &__body {
+    flex: 1;
+    overflow: hidden;
+  }
 
-.json-table__pagination {
-  display: flex;
-  justify-content: flex-end;
-  padding: 16px 0 0 0;
-  flex-shrink: 0;
+  &__pagination {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 0 0 0;
+    flex-shrink: 0;
+  }
 }
 </style>

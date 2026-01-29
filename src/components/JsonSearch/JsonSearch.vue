@@ -433,25 +433,35 @@ defineExpose({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .json-search {
   background-color: #fff;
   padding: 16px 16px 16px;
   border-radius: 8px 8px 0 0;
   flex-shrink: 0;
-}
 
-.json-search__form {
-  display: flex;
-  align-items: flex-start;
-}
+  &__form {
+    display: flex;
+    align-items: flex-start;
+  }
 
-.json-search__items {
-  flex: 1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 16px;
+  &__items {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+
+    .el-button + .el-button {
+      margin-left: 8px;
+    }
+  }
 }
 
 .search-form-item {
@@ -459,28 +469,18 @@ defineExpose({
   align-items: center;
   gap: 8px;
   min-width: 0;
-}
 
-.search-form-item__label {
-  flex-shrink: 0;
-  color: #606266;
-  font-size: 14px;
-  white-space: nowrap;
-}
+  &__label {
+    flex-shrink: 0;
+    color: #606266;
+    font-size: 14px;
+    white-space: nowrap;
+  }
 
-.search-form-item__content {
-  flex: 1;
-  min-width: 0;
-}
-
-.json-search__actions {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.json-search__actions .el-button + .el-button {
-  margin-left: 8px;
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 /* 确保日期选择器不超出容器 */
