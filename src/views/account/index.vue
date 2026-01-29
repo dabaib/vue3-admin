@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive, nextTick } from 'vue'
+import { ref, reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import JsonTable from '@/components/JsonTable'
 import JsonSearch from '@/components/JsonSearch'
-import JsonDialog from '@/components/JsonDialog'
-import JsonForm, { type FormSchema } from '@/components/JsonForm'
 import type { TableSchema, FetchDataParams, FetchDataResult } from '@/components/JsonTable'
 import type { SearchSchema } from '@/components/JsonSearch'
+import AccountDialog from './modules/AccountDialog.vue'
 
 // -----------------------------------------------------------------------------
 // 1. 状态定义
@@ -14,23 +13,14 @@ import type { SearchSchema } from '@/components/JsonSearch'
 
 // 表格引用
 const tableRef = ref()
-// 表单引用
-const formRef = ref()
+// 弹窗引用
+const dialogRef = ref()
 
 // 查询参数
 const queryParams = reactive<Record<string, any>>({})
 
 // 选中行
 const selectedRows = ref<any[]>([])
-
-// 弹窗状态
-const dialogVisible = ref(false)
-const dialogTitle = ref('')
-const dialogType = ref<'add' | 'edit'>('add')
-const confirmLoading = ref(false)
-
-// 表单数据
-const formData = ref<Record<string, any>>({})
 
 // -----------------------------------------------------------------------------
 // 2. 配置定义
@@ -108,62 +98,6 @@ const tableSchema: TableSchema = {
   }
 }
 
-// Form Schema: 表单配置
-const formSchema: FormSchema = {
-  labelWidth: '80px',
-  items: [
-    { 
-      prop: 'username', 
-      label: '用户名', 
-      type: 'input', 
-      rules: [{ required: true, message: '请输入用户名', trigger: 'blur' }] 
-    },
-    { 
-      prop: 'realName', 
-      label: '真实姓名', 
-      type: 'input',
-      rules: [{ required: true, message: '请输入真实姓名', trigger: 'blur' }]
-    },
-    { 
-      prop: 'phone', 
-      label: '手机号', 
-      type: 'input',
-      rules: [
-        { required: true, message: '请输入手机号', trigger: 'blur' },
-        { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
-      ]
-    },
-    { 
-      prop: 'role', 
-      label: '角色', 
-      type: 'select',
-      options: [
-        { label: '管理员', value: 'admin' },
-        { label: '编辑', value: 'editor' },
-        { label: '普通用户', value: 'user' }
-      ],
-      rules: [{ required: true, message: '请选择角色', trigger: 'change' }]
-    },
-    { 
-      prop: 'department', 
-      label: '部门', 
-      type: 'select',
-      options: [
-        { label: '研发部', value: '研发部' }, // simplified for demo
-        { label: '市场部', value: '市场部' },
-        { label: '运营部', value: '运营部' }
-      ],
-      rules: [{ required: true, message: '请选择部门', trigger: 'change' }]
-    },
-    { 
-      prop: 'status', 
-      label: '状态', 
-      type: 'switch',
-      defaultValue: 1
-    }
-  ]
-}
-
 // -----------------------------------------------------------------------------
 // 3. 数据交互
 // -----------------------------------------------------------------------------
@@ -217,24 +151,34 @@ const handleReset = () => {
 
 // 打开新增弹窗
 const handleAdd = () => {
-  dialogType.value = 'add'
-  dialogTitle.value = '新增用户'
-  formData.value = {} // 重置表单数据
-  dialogVisible.value = true
-  nextTick(() => {
-    formRef.value?.clearValidate()
-  })
+  dialogRef.value?.open('add')
 }
 
 // 打开编辑弹窗
 const handleEdit = (row: any) => {
-  dialogType.value = 'edit'
-  dialogTitle.value = '编辑用户'
-  formData.value = { ...row } // 回填数据
-  dialogVisible.value = true
-  nextTick(() => {
-    formRef.value?.clearValidate()
-  })
+  dialogRef.value?.open('edit', row)
+}
+
+// 弹窗回调成功
+const handleSuccess = ({ type, data }: { type: string, data: any }) => {
+  if (type === 'add') {
+    // 模拟新增
+    const newItem = {
+      id: mockData.length + 1,
+      ...data,
+      createTime: new Date().toLocaleString()
+    }
+    mockData.unshift(newItem)
+    ElMessage.success('新增成功')
+  } else {
+    // 模拟编辑
+    const index = mockData.findIndex(item => item.id === data.id)
+    if (index > -1) {
+      mockData[index] = { ...mockData[index], ...data }
+    }
+    ElMessage.success('编辑成功')
+  }
+  tableRef.value?.refresh()
 }
 
 // 处理操作事件
@@ -274,41 +218,6 @@ const handleBatchDelete = () => {
     mockData = mockData.filter(item => !ids.includes(item.id))
     tableRef.value?.refresh()
   })
-}
-
-// 提交表单
-const handleSave = async () => {
-  const valid = await formRef.value?.validate()
-  if (!valid) return
-
-  confirmLoading.value = true
-  try {
-    // 模拟 API 请求
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    if (dialogType.value === 'add') {
-      // 模拟新增
-      const newItem = {
-        id: mockData.length + 1,
-        ...formData.value,
-        createTime: new Date().toLocaleString()
-      }
-      mockData.unshift(newItem)
-      ElMessage.success('新增成功')
-    } else {
-      // 模拟编辑
-      const index = mockData.findIndex(item => item.id === formData.value.id)
-      if (index > -1) {
-        mockData[index] = { ...mockData[index], ...formData.value }
-      }
-      ElMessage.success('编辑成功')
-    }
-    
-    dialogVisible.value = false
-    tableRef.value?.refresh()
-  } finally {
-    confirmLoading.value = false
-  }
 }
 </script>
 
@@ -355,20 +264,8 @@ const handleSave = async () => {
       </JsonTable>
     </div>
 
-    <!-- 新增/编辑弹窗 -->
-    <JsonDialog
-      v-model="dialogVisible"
-      :title="dialogTitle"
-      :confirm-loading="confirmLoading"
-      width="500px"
-      @confirm="handleSave"
-    >
-      <JsonForm
-        ref="formRef"
-        :schema="formSchema"
-        v-model="formData"
-      />
-    </JsonDialog>
+    <!-- 弹窗组件 -->
+    <AccountDialog ref="dialogRef" @success="handleSuccess" />
   </div>
 </template>
 

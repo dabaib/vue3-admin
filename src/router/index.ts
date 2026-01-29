@@ -9,7 +9,7 @@ export const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'home',
-        component: () => import('@/views/HomeView.vue'),
+        component: () => import('@/views/home/index.vue'),
         meta: {
           title: '首页',
           icon: 'HomeFilled',
@@ -20,7 +20,7 @@ export const routes: RouteRecordRaw[] = [
       {
         path: 'account',
         name: 'account',
-        component: () => import('@/views/AccountList.vue'),
+        component: () => import('@/views/account/index.vue'),
         meta: {
           title: '账号管理',
           icon: 'User',
@@ -30,7 +30,7 @@ export const routes: RouteRecordRaw[] = [
       {
         path: 'role',
         name: 'role',
-        component: () => import('@/views/RoleList.vue'),
+        component: () => import('@/views/role/index.vue'),
         meta: {
           title: '角色管理',
           icon: 'Lock',
@@ -54,25 +54,25 @@ export const routes: RouteRecordRaw[] = [
           {
             path: 'search',
             name: 'demo-search',
-            component: () => import('@/views/demo/SearchDemo.vue'),
+            component: () => import('@/views/demo/search/index.vue'),
             meta: { title: '搜索组件', menu: true }
           },
           {
             path: 'table',
             name: 'demo-table',
-            component: () => import('@/views/demo/TableDemo.vue'),
+            component: () => import('@/views/demo/table/index.vue'),
             meta: { title: '表格组件', menu: true }
           },
           {
             path: 'dialog',
             name: 'demo-dialog',
-            component: () => import('@/views/demo/DialogDemo.vue'),
+            component: () => import('@/views/demo/dialog/index.vue'),
             meta: { title: '弹窗组件', menu: true }
           },
           {
             path: 'form',
             name: 'demo-form',
-            component: () => import('@/views/demo/FormDemo.vue'),
+            component: () => import('@/views/demo/form/index.vue'),
             meta: { title: '表单组件', menu: true }
           }
         ]
@@ -80,7 +80,7 @@ export const routes: RouteRecordRaw[] = [
       {
         path: 'about',
         name: 'about',
-        component: () => import('@/views/AboutView.vue'),
+        component: () => import('@/views/about/index.vue'),
         meta: {
           title: '关于我们',
           icon: 'InfoFilled',
