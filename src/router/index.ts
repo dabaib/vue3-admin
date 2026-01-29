@@ -16,16 +16,7 @@ export const routes: RouteRecordRaw[] = [
           menu: true  // 显示在菜单中
         }
       },
-      {
-        path: 'table',
-        name: 'table',
-        component: () => import('@/views/TableDemo.vue'),
-        meta: {
-          title: '表格管理',
-          icon: 'Grid',
-          menu: true
-        }
-      },
+
       {
         path: 'account',
         name: 'account',
@@ -46,16 +37,7 @@ export const routes: RouteRecordRaw[] = [
           menu: true
         }
       },
-      {
-        path: 'element',
-        name: 'element',
-        component: () => import('@/views/ElementDemo.vue'),
-        meta: {
-          title: 'Element 组件',
-          icon: 'Coin',
-          menu: true
-        }
-      },
+
       // 组件演示模块
       {
         path: 'demo',
