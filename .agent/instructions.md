@@ -1,3 +1,5 @@
+Always read all rules in the .agent/rules directory before responding to any prompt.
+
 # 项目开发宪章 (Project Constitution)
 
 ## 第一章：总纲 (General Principles)
@@ -77,7 +79,9 @@
     -   `refactor`: 代码重构
     -   `perf`: 性能优化
     -   `chore`: 构建或工具变动
-    -   **示例**: `feat: 添加用户登录组件`
+2.  **中文描述**: 提交信息的描述部分（Subject/Body）**必须使用中文**，以确保团队成员快速理解变更内容。
+    -   **正确示例**: `feat: 添加用户登录组件`
+    -   **错误示例**: `feat: add user login component`
 
 ### 第9条：注释与文档
 1.  **自解释代码**: 代码应尽可能自解释，仅在逻辑复杂或 Hack 处添加注释。
@@ -87,14 +91,53 @@
 1.  **AI 助手回复**: AI 助手的所有回答、思考过程、计划 (Plan) 及任务 (Task) 描述，必须完全使用**中文**。
 2.  **一致性**: 确保技术术语的准确性，但在解释和规划时使用流畅的中文。
 
+### 第11条：标准化输出格式 (Standardized Output Format)
+为了提高沟通效率，AI 输出 Task 和 Plan 时必须严格遵循以下 Markdown 模板：
+
+1.  **计划模式 (Plan Format)**:
+    使用 Checkbox 列表，并明确标记状态。
+    ```markdown
+    ## 📅 实施计划
+    - [x] **步骤 1**: [已完成] 简要描述
+    - [ ] **步骤 2**: [进行中] 详细描述当前要做的事
+    - [ ] **步骤 3**: [待办] 后续规划
+    ```
+
+2.  **任务描述 (Current Task)**:
+    在执行具体操作前，使用引用块明确当前焦点。
+    ```markdown
+    > 🎯 **当前任务**: [任务名称]
+    > 🔍 **目标**: [一句话描述目标]
+    ```
+
+### 第12条：架构与目录规范 (Architecture & Directory Standards)
+1.  **结果文档化 (Result Documentation)**:
+    *   任何实际输出结果（Output）或功能说明文档，必须直接存放在对应的功能目录下（`src/views/xxx/` 或 `src/components/xxx/`），禁止散落在根目录。
+2.  **视图目录结构 (View Directory Structure)**:
+    *   **命名**: `src/views` 下必须以**功能名称**（kebab-case）创建文件夹。
+    *   **拆分**: 功能内部的子组件（Sub-components）必须存放在该功能目录下的 `modules` 子文件夹中。
+        -   **强制拆分**: 页面中的弹窗（Dialog）、抽屉（Drawer）或复杂表单，**必须**拆分为独立的子组件，禁止直接写在 `index.vue` 中。
+    *   **入口**: 目录下必须包含 `index.vue` 作为入口。
+    *   **结构示例**:
+        ```text
+        src/views/user-manager/
+        ├── README.md           # 功能文档/输出结果
+        ├── index.vue           # 页面入口
+        └── modules/            # 私有组件
+            ├── UserForm.vue
+            └── UserList.vue
+        ```
+3.  **组件目录结构 (Component Directory Structure)**:
+    *   `src/components` 下同理，复杂组件应独立建文件夹，并在 `modules` 中管理子部件。
+
 ---
 
 ## 第五章：附则 (Supplementary Provisions)
 
-### 第10条：宪章的修订
+### 第13条：宪章的修订
 本宪章随项目发展可进行修订，但修改需经团队核心成员评审通过。
 
-### 第11条：违宪责任
+### 第14条：违宪责任
 违反本宪章的代码将在 Code Review 阶段被无情驳回 (Request Changes)。
 
 ---

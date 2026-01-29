@@ -43,5 +43,5 @@ npm run build
 
 ## 📜 项目宪章 (Constitution)
 
-本项目严格遵循 [项目开发宪章](./PROJECT_CONSTITUTION.md)。所有贡献者在提交代码前请务必仔细阅读。
+本项目严格遵循 [项目开发宪章](./agent/instructions.md)。所有贡献者在提交代码前请务必仔细阅读。
 
