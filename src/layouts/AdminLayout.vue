@@ -191,148 +191,146 @@ const handleUserCommand = (command: string) => {
   </el-container>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .layout-container {
   width: 100%;
   height: 100vh;
   overflow: hidden;
-}
 
-/* 侧边栏 */
-.layout-aside {
-  background-color: #001529;
-  transition: width 0.3s;
-  overflow: hidden;
-}
+  /* 侧边栏 */
+  .layout-aside {
+    background-color: #001529;
+    transition: width 0.3s;
+    overflow: hidden;
+    
+    .logo-container {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      background-color: #002140;
+      overflow: hidden;
 
-.logo-container {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 16px;
-  background-color: #002140;
-  overflow: hidden;
-}
+      .logo-icon {
+        color: #1890ff;
+        flex-shrink: 0;
+      }
 
-.logo-icon {
-  color: #1890ff;
-  flex-shrink: 0;
-}
+      .logo-text {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 600;
+        margin-left: 10px;
+        white-space: nowrap;
+      }
+    }
 
-.logo-text {
-  color: #fff;
-  font-size: 18px;
-  font-weight: 600;
-  margin-left: 10px;
-  white-space: nowrap;
-}
+    .layout-menu {
+      border-right: none;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
 
-.layout-menu {
-  border-right: none;
-  height: calc(100vh - 60px);
-  overflow-y: auto;
-}
+      &:not(.el-menu--collapse) {
+        width: 220px;
+      }
 
-.layout-menu:not(.el-menu--collapse) {
-  width: 220px;
-}
+      /* 激活菜单项样式 */
+      .el-menu-item.is-active {
+        background-color: #1890ff !important;
+      }
+    }
+  }
 
-/* 激活菜单项样式 */
-.layout-menu .el-menu-item.is-active {
-  background-color: #1890ff !important;
-}
+  /* 主内容区 */
+  .layout-main {
+    background-color: #f0f2f5;
+    overflow: hidden;
 
-/* 顶部导航 */
-.layout-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  background-color: #fff;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-  z-index: 10;
-}
+    /* 顶部导航 */
+    .layout-header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background-color: #fff;
+      box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+      z-index: 10;
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
 
-.collapse-btn {
-  font-size: 20px;
-  cursor: pointer;
-  color: #333;
-  transition: color 0.3s;
-}
+        .collapse-btn {
+          font-size: 20px;
+          cursor: pointer;
+          color: #333;
+          transition: color 0.3s;
 
-.collapse-btn:hover {
-  color: #1890ff;
-}
+          &:hover {
+            color: #1890ff;
+          }
+        }
+      }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
 
-.header-icon {
-  font-size: 18px;
-  cursor: pointer;
-  color: #666;
-  transition: color 0.3s;
-}
+        .header-icon {
+          font-size: 18px;
+          cursor: pointer;
+          color: #666;
+          transition: color 0.3s;
 
-.header-icon:hover {
-  color: #1890ff;
-}
+          &:hover {
+            color: #1890ff;
+          }
+        }
 
-.header-badge {
-  cursor: pointer;
-}
+        .header-badge {
+          cursor: pointer;
+        }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          padding: 4px 8px;
+          border-radius: 4px;
+          transition: background-color 0.3s;
 
-.user-info:hover {
-  background-color: #f5f5f5;
-}
+          &:hover {
+            background-color: #f5f5f5;
+          }
 
-.user-name {
-  color: #333;
-  font-size: 14px;
-}
+          .user-name {
+            color: #333;
+            font-size: 14px;
+          }
+        }
+      }
+    }
 
+    .layout-content {
+      padding: 16px;
+      overflow-y: auto;
+    }
 
-
-/* 主内容区 */
-.layout-main {
-  background-color: #f0f2f5;
-  overflow: hidden;
-}
-
-.layout-content {
-  padding: 16px;
-  overflow-y: auto;
-}
-
-/* 底部 */
-.layout-footer {
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-  font-size: 14px;
-  background-color: #fff;
+    /* 底部 */
+    .layout-footer {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+      background-color: #fff;
+    }
+  }
 }
 </style>
