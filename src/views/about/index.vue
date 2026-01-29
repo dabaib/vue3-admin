@@ -21,18 +21,18 @@ import AboutContact from './modules/AboutContact.vue'
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .about-page {
   width: 100%;
   min-height: 100vh;
   background-color: #ffffff;
-}
 
-.about-footer {
-  padding: 40px 0;
-  text-align: center;
-  color: #909399;
-  font-size: 0.9rem;
-  border-top: 1px solid #eba4a41a;
+  .about-footer {
+    padding: 40px 0;
+    text-align: center;
+    color: #909399;
+    font-size: 0.9rem;
+    border-top: 1px solid #eba4a41a;
+  }
 }
 </style>

@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .demo-layout {
   padding: 20px;
   background-color: #f0f2f5;

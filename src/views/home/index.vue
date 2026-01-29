@@ -97,85 +97,85 @@ const activities = ref([
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .home-view {
   padding: 0;
-}
 
-.stats-row {
-  margin-bottom: 20px;
-}
+  .stats-row {
+    margin-bottom: 20px;
 
-.stat-card {
-  margin-bottom: 20px;
-}
+    .stat-card {
+      margin-bottom: 20px;
 
-.stat-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+      .stat-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-.stat-info {
-  flex: 1;
-}
+        .stat-info {
+          flex: 1;
 
-.stat-title {
-  font-size: 14px;
-  color: #909399;
-  margin-bottom: 8px;
-}
+          .stat-title {
+            font-size: 14px;
+            color: #909399;
+            margin-bottom: 8px;
+          }
 
-.stat-value {
-  font-size: 28px;
-  font-weight: 600;
-  color: #303133;
-}
+          .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #303133;
+          }
+        }
 
-.stat-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+        .stat-icon {
+          width: 56px;
+          height: 56px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
 
-.section-card {
-  margin-bottom: 20px;
-}
+  .section-card {
+    margin-bottom: 20px;
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-}
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
 
-.shortcut-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s;
-  margin-bottom: 16px;
-}
+    .shortcut-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 16px;
 
-.shortcut-item:hover {
-  background-color: #f5f7fa;
-  transform: translateY(-2px);
-}
+      &:hover {
+        background-color: #f5f7fa;
+        transform: translateY(-2px);
+      }
 
-.shortcut-item span {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #606266;
-}
+      span {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #606266;
+      }
+    }
 
-.activity-user {
-  font-weight: 600;
-  color: #409eff;
+    .activity-user {
+      font-weight: 600;
+      color: #409eff;
+    }
+  }
 }
 </style>

@@ -47,15 +47,16 @@ const handleReset = () => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .demo-card {
   padding: 20px;
   background: #fff;
-}
-.result-box {
-  margin-top: 20px;
-  padding: 10px;
-  background: #f5f7fa;
-  border-radius: 4px;
+
+  .result-box {
+    margin-top: 20px;
+    padding: 10px;
+    background: #f5f7fa;
+    border-radius: 4px;
+  }
 }
 </style>

@@ -269,7 +269,7 @@ const handleBatchDelete = () => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .page-container {
   height: 100%;
   display: flex;
@@ -277,12 +277,12 @@ const handleBatchDelete = () => {
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
-}
 
-.table-container {
-  flex: 1;
-  min-height: 0;
-  padding: 0 16px 16px;
+  .table-container {
+    flex: 1;
+    min-height: 0;
+    padding: 0 16px 16px;
+  }
 }
 </style>
 

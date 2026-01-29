@@ -42,7 +42,7 @@ const handleSubmit = (data: any) => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .demo-card {
   padding: 20px;
   background: #fff;

@@ -30,7 +30,7 @@ const teamRef = ref<HTMLElement | null>(null)
 onMounted(() => {
   const observer = new IntersectionObserver(
     (entries) => {
-      if (entries[0].isIntersecting) {
+      if (entries[0]?.isIntersecting) {
         isVisible.value = true
       }
     },
@@ -72,138 +72,140 @@ onMounted(() => {
   </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .about-team {
   padding: 100px 0;
   background-color: #ffffff;
-}
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
-.section-header {
-  text-align: center;
-  margin-bottom: 80px;
-}
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
 
-.title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #303133;
-  margin-bottom: 16px;
-  opacity: 0;
-}
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #303133;
+      margin-bottom: 16px;
+      opacity: 0;
+    }
 
-.subtitle {
-  font-size: 1.1rem;
-  color: #909399;
-  opacity: 0;
-}
+    .subtitle {
+      font-size: 1.1rem;
+      color: #909399;
+      opacity: 0;
+    }
+  }
 
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
-}
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
 
-.team-card {
-  text-align: center;
-  opacity: 0;
-}
+    .team-card {
+      text-align: center;
+      opacity: 0;
 
-.avatar-wrapper {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  margin: 0 auto 24px;
-  cursor: pointer;
-}
+      .avatar-wrapper {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 24px;
+        cursor: pointer;
 
-.avatar-placeholder {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #e0eafc, #cfdef3);
-  border-radius: 50%;
-  border: 4px solid #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  font-weight: 700;
-  color: #a0cfff;
-  position: relative;
-  z-index: 2;
-  transition: transform 0.3s ease;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
+        .avatar-placeholder {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #e0eafc, #cfdef3);
+          border-radius: 50%;
+          border: 4px solid #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 3rem;
+          font-weight: 700;
+          color: #a0cfff;
+          position: relative;
+          z-index: 2;
+          transition: transform 0.3s ease;
+          box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
 
-.avatar-pulse {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: rgba(64, 158, 255, 0.4);
-  z-index: 1;
-  transform: scale(1);
-  opacity: 0;
-  transition: all 0.3s ease;
-}
+        .avatar-pulse {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: rgba(64, 158, 255, 0.4);
+          z-index: 1;
+          transform: scale(1);
+          opacity: 0;
+          transition: all 0.3s ease;
+        }
 
-.avatar-wrapper:hover .avatar-placeholder {
-  transform: translateY(-8px);
-}
+        .social-links {
+          position: absolute;
+          bottom: -20px;
+          left: 50%;
+          transform: translateX(-50%) translateY(10px);
+          background: #fff;
+          padding: 8px 16px;
+          border-radius: 20px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          display: flex;
+          gap: 12px;
+          opacity: 0;
+          transition: all 0.3s ease;
+          z-index: 3;
 
-.avatar-wrapper:hover .avatar-pulse {
-  animation: pulse 1.5s infinite;
-}
+          .social-icon {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #606266;
+            cursor: pointer;
 
-.social-links {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: #fff;
-  padding: 8px 16px;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  display: flex;
-  gap: 12px;
-  opacity: 0;
-  transition: all 0.3s ease;
-  z-index: 3;
-}
+            &:hover {
+              color: #409eff;
+            }
+          }
+        }
 
-.avatar-wrapper:hover .social-links {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+        &:hover {
+          .avatar-placeholder {
+            transform: translateY(-8px);
+          }
 
-.social-icon {
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: #606266;
-  cursor: pointer;
-}
+          .avatar-pulse {
+            animation: pulse 1.5s infinite;
+          }
 
-.social-icon:hover {
-  color: #409eff;
-}
+          .social-links {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
+        }
+      }
 
-.name {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #303133;
-  margin-bottom: 8px;
-}
+      .name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #303133;
+        margin-bottom: 8px;
+      }
 
-.role {
-  font-size: 0.9rem;
-  color: #909399;
+      .role {
+        font-size: 0.9rem;
+        color: #909399;
+      }
+    }
+  }
 }
 
 @keyframes pulse {
@@ -232,7 +234,7 @@ onMounted(() => {
 }
 
 @media (max-width: 1024px) {
-  .team-grid {
+  .about-team .team-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }

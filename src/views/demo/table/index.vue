@@ -40,7 +40,7 @@ const fetchData = async (params: any) => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .demo-card {
   padding: 20px;
   background: #fff;

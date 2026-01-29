@@ -67,93 +67,93 @@ onMounted(() => {
   </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .about-values {
   padding: 100px 0;
   background-color: #f5f7fa;
-}
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
-.section-header {
-  text-align: center;
-  margin-bottom: 60px;
-}
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
 
-.title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #303133;
-  margin-bottom: 16px;
-}
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #303133;
+      margin-bottom: 16px;
+    }
 
-.subtitle {
-  font-size: 1.1rem;
-  color: #909399;
-}
+    .subtitle {
+      font-size: 1.1rem;
+      color: #909399;
+    }
+  }
 
-.values-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-}
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
 
-.value-card {
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 16px;
-  transition: all 0.4s ease;
-  opacity: 0; /* 初始隐藏 */
-  transform: translateY(30px);
-}
+    .value-card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+      transition: all 0.4s ease;
+      opacity: 0; /* 初始隐藏 */
+      transform: translateY(30px);
 
-.value-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-}
+      .icon-wrapper {
+        width: 64px;
+        height: 64px;
+        background: #ecf5ff;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        transition: transform 0.4s ease, background-color 0.4s ease;
+        
+        .icon {
+          font-size: 32px;
+          color: #409eff;
+          transition: color 0.4s ease;
+        }
+      }
 
-.icon-wrapper {
-  width: 64px;
-  height: 64px;
-  background: #ecf5ff;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 24px;
-  transition: transform 0.4s ease, background-color 0.4s ease;
-}
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #303133;
+        margin-bottom: 16px;
+      }
 
-.value-card:hover .icon-wrapper {
-  transform: rotate(10deg);
-  background: #409eff;
-}
+      .card-desc {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #606266;
+      }
 
-.icon {
-  font-size: 32px;
-  color: #409eff;
-  transition: color 0.4s ease;
-}
+      &:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 
-.value-card:hover .icon {
-  color: #ffffff;
-}
+        .icon-wrapper {
+          transform: rotate(10deg);
+          background: #409eff;
 
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #303133;
-  margin-bottom: 16px;
-}
-
-.card-desc {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #606266;
+          .icon {
+            color: #ffffff;
+          }
+        }
+      }
+    }
+  }
 }
 
 /* Animations */
@@ -169,7 +169,7 @@ onMounted(() => {
 }
 
 @media (max-width: 900px) {
-  .values-grid {
+  .about-values .values-grid {
     grid-template-columns: 1fr;
   }
 }

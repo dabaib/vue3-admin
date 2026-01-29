@@ -61,93 +61,95 @@ onMounted(() => {
   </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .about-story {
   padding: 100px 0;
   background-color: #ffffff;
   overflow: hidden;
-}
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
-.story-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  align-items: center;
-}
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
 
-.image-placeholder {
-  width: 100%;
-  aspect-ratio: 4/3;
-  background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
-  border-radius: 20px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-}
+  .image-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(64, 158, 255, 0.1), rgba(54, 209, 220, 0.1));
-}
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(64, 158, 255, 0.1), rgba(54, 209, 220, 0.1));
+    }
 
-.placeholder-text {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #909399;
-  z-index: 1;
-}
+    .placeholder-text {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #909399;
+      z-index: 1;
+    }
+  }
 
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 32px;
-  color: #303133;
-}
+  .story-content {
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 32px;
+      color: #303133;
+    }
 
-.story-text {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: #606266;
-  margin-bottom: 24px;
-}
+    .story-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #606266;
+      margin-bottom: 24px;
+    }
 
-.stats-row {
-  display: flex;
-  gap: 48px;
-  margin-top: 40px;
-  padding-top: 32px;
-  border-top: 1px solid #eba4a41a; /* visual fix */
-}
+    .stats-row {
+      display: flex;
+      gap: 48px;
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid #eba4a41a; /* visual fix */
 
-.stat-item {
-  display: flex;
-  flex-direction: column;
-}
+      .stat-item {
+        display: flex;
+        flex-direction: column;
 
-.stat-number {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #409eff;
-}
+        .stat-number {
+          font-size: 2rem;
+          font-weight: 800;
+          color: #409eff;
+        }
 
-.stat-label {
-  font-size: 0.9rem;
-  color: #909399;
-  margin-top: 4px;
+        .stat-label {
+          font-size: 0.9rem;
+          color: #909399;
+          margin-top: 4px;
+        }
+      }
+    }
+  }
 }
 
 /* Animations */
@@ -171,13 +173,15 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .story-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  
-  .section-title {
-    font-size: 2rem;
+  .about-story {
+    .story-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    
+    .section-title {
+      font-size: 2rem;
+    }
   }
 }
 </style>

@@ -29,7 +29,7 @@ import { ArrowRight } from '@element-plus/icons-vue'
   </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .about-hero {
   position: relative;
   height: 80vh;
@@ -39,98 +39,98 @@ import { ArrowRight } from '@element-plus/icons-vue'
   justify-content: center;
   overflow: hidden;
   background: radial-gradient(circle at center, #ffffff, #f0f2f5);
-}
 
-.hero-content {
-  position: relative;
-  z-index: 10;
-  text-align: center;
-  max-width: 800px;
-  padding: 0 20px;
-}
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 800px;
+    padding: 0 20px;
 
-.hero-title {
-  font-size: 4rem;
-  font-weight: 800;
-  line-height: 1.2;
-  margin-bottom: 24px;
-  color: #1a1a1a;
-  letter-spacing: -1px;
-}
+    .hero-title {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      color: #1a1a1a;
+      letter-spacing: -1px;
+    }
 
-.gradient-text {
-  background: linear-gradient(135deg, #409eff 0%, #36d1dc 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: inline-block;
-}
+    .gradient-text {
+      background: linear-gradient(135deg, #409eff 0%, #36d1dc 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
 
-.hero-subtitle {
-  font-size: 1.25rem;
-  color: #606266;
-  margin-bottom: 40px;
-  line-height: 1.6;
-}
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: #606266;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
 
-.hero-actions {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-}
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
 
-.cta-button {
-  padding: 12px 32px;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+      .cta-button {
+        padding: 12px 32px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-.cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(64, 158, 255, 0.3);
-}
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(64, 158, 255, 0.3);
+        }
+      }
 
-.secondary-button {
-  padding: 12px 32px;
-  border-radius: 8px;
-}
+      .secondary-button {
+        padding: 12px 32px;
+        border-radius: 8px;
+      }
+    }
+  }
 
-/* Background Animations */
-.hero-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  pointer-events: none;
-}
+  /* Background Animations */
+  .hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;
 
-.glow-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.4;
-  animation: float 10s infinite ease-in-out;
-}
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: float 10s infinite ease-in-out;
 
-.orb-1 {
-  width: 400px;
-  height: 400px;
-  background: #409eff;
-  top: -10%;
-  left: -10%;
-  animation-delay: 0s;
-}
+      &.orb-1 {
+        width: 400px;
+        height: 400px;
+        background: #409eff;
+        top: -10%;
+        left: -10%;
+        animation-delay: 0s;
+      }
 
-.orb-2 {
-  width: 300px;
-  height: 300px;
-  background: #36d1dc;
-  bottom: 10%;
-  right: -5%;
-  animation-delay: -5s;
+      &.orb-2 {
+        width: 300px;
+        height: 300px;
+        background: #36d1dc;
+        bottom: 10%;
+        right: -5%;
+        animation-delay: -5s;
+      }
+    }
+  }
 }
 
 @keyframes float {
