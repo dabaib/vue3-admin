@@ -1,8 +1,8 @@
 ---
-trigger: always_on
+trigger: glob
 ---
 
-在任何提问开始之前，请阅读 .agent/rules 下全部规则，并接下的所有回答用中文回答
+在任何提问开始之前，请阅读以下全部规则，并接下的所有回答用中文回答
 
 # 项目开发宪章 (Project Constitution)
 
@@ -124,17 +124,20 @@ trigger: always_on
 
 ### 第12条：架构与目录规范 (Architecture & Directory Standards)
 1.  **结果文档化 (Result Documentation)**:
-    *   任何实际输出结果（Output）或功能说明文档，必须直接存放在对应的功能目录下（`src/views/xxx/` 或 `src/components/xxx/`），禁止散落在根目录。
+    *   任何实际输出结果（Output）或功能说明文档，必须存放在对应功能目录下的 `doc` 子文件夹中，禁止散落在根目录或功能目录根下。
 2.  **视图目录结构 (View Directory Structure)**:
-    *   **命名**: `src/views` 下必须以**功能名称**（kebab-case）创建文件夹。提交
+    *   **命名**: `src/views` 下必须以**功能名称**（kebab-case）创建文件夹。
     *   **拆分**: 功能内部的子组件（Sub-components）必须存放在该功能目录下的 `modules` 子文件夹中。
         -   **强制拆分**: 页面中的弹窗（Dialog）、抽屉（Drawer）或复杂表单，**必须**拆分为独立的子组件，禁止直接写在 `index.vue` 中。
     *   **入口**: 目录下必须包含 `index.vue` 作为入口。
+    *   **文档**: 详细设计文档（`README.md`）和接口文档（`API.md`）必须存放在 `doc` 子文件夹中。
     *   **结构示例**:
         ```text
         src/views/user-manager/
-        ├── README.md           # 功能文档/输出结果
         ├── index.vue           # 页面入口
+        ├── doc/                # 文档目录
+        │   ├── README.md       # 详细设计文档
+        │   └── API.md          # 接口文档
         └── modules/            # 私有组件
             ├── UserForm.vue
             └── UserList.vue
@@ -156,9 +159,18 @@ trigger: always_on
 ## 第六章：API与开发流程法案 (API & Development Process Act)
 
 ### 第14条：API 管理规范
-1.  **目录归属**: 所有 API 接口定义（Interface）及请求方法必须统一存放在 `src/api/` 目录下。
-2.  **职责分离**: 公共工具方法（如数据树形化、格式化）必须存放在 `src/utils/` 目录下，严禁与 API 定义混用。
-3.  **强制引用**: 页面（Views）和组件（Components）必须通过 `import` 引用 `src/api/` 下的方法，严禁在组件内部直接发起 Axios 请求。
+1.  **目录归属**: 所有 API 接口定义及请求方法必须统一存放在 `src/api/` 目录下，按功能模块创建子目录（如 `src/api/role/`、`src/api/user/`）。
+2.  **文件分离**: 每个 API 模块目录必须包含以下文件，实现类型与逻辑分离：
+    *   `types.ts`: 定义该模块的所有 TypeScript 类型（实体、请求参数、响应结构等）。
+    *   `index.ts`: 定义该模块的所有 API 请求方法，并从 `types.ts` 导入类型。
+    *   **结构示例**:
+        ```text
+        src/api/role/
+        ├── types.ts            # 类型定义
+        └── index.ts            # API 方法
+        ```
+3.  **职责分离**: 公共工具方法（如数据树形化、格式化）必须存放在 `src/utils/` 目录下，严禁与 API 定义混用。
+4.  **强制引用**: 页面（Views）和组件（Components）必须通过 `import` 引用 `src/api/` 下的方法，严禁在组件内部直接发起 Axios 请求。
 
 ### 第15条：开发工作流
 1.  **Mock 策略**: 在 `src/api/` 文件中预留真实接口位置。开发阶段可使用模拟数据，但在联调时必须能够轻松移除 Mock 数据并切换到真实接口。
