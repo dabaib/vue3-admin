@@ -2,7 +2,7 @@
 trigger: always_on
 ---
 
-Always read all rules in the .agent/rules directory before responding to any prompt.
+在任何提问开始之前，请阅读 .agent/rules 下全部规则，并接下的所有回答用中文回答
 
 # 项目开发宪章 (Project Constitution)
 
@@ -144,12 +144,87 @@ Always read all rules in the .agent/rules directory before responding to any pro
 
 ---
 
-## 第五章：附则 (Supplementary Provisions)
+## 第五章：设计与体验法案 (Design & Experience Act)
 
-### 第13条：宪章的修订
+### 第13条：实施工作流
+1.  **基础先行**: 先完善 `index.css` 和设计系统，再开发组件。
+2.  **组件驱动**: 先构建原子组件，再组装页面，拒绝一次性代码。
+3.  **细节打磨**: 开发完成后，必须通过“Review”环节优化交互和过渡效果。
+
+---
+
+## 第六章：API与开发流程法案 (API & Development Process Act)
+
+### 第14条：API 管理规范
+1.  **目录归属**: 所有 API 接口定义（Interface）及请求方法必须统一存放在 `src/api/` 目录下。
+2.  **职责分离**: 公共工具方法（如数据树形化、格式化）必须存放在 `src/utils/` 目录下，严禁与 API 定义混用。
+3.  **强制引用**: 页面（Views）和组件（Components）必须通过 `import` 引用 `src/api/` 下的方法，严禁在组件内部直接发起 Axios 请求。
+
+### 第15条：开发工作流
+1.  **Mock 策略**: 在 `src/api/` 文件中预留真实接口位置。开发阶段可使用模拟数据，但在联调时必须能够轻松移除 Mock 数据并切换到真实接口。
+2.  **标准流程**: 需求分析 -> 页面开发 -> Mock 接口实现 -> 真实接口联调。
+
+---
+
+## 第七章：文档规范法案 (Documentation Standards Act)
+
+### 第16条：详细设计文档规范
+所有功能模块在开发前，必须在模块根目录下创建 `README.md`，并严格遵守以下标准模板。
+
+**标准模板 (Markdown)**:
+```markdown
+# [功能名称] (Feature Name) - 详细设计文档
+
+## 1. 背景与目标
+简述该功能解决的问题及核心目标。
+
+## 2. 功能概述
+列出核心功能点。
+- **特性 1**: 描述
+- **特性 2**: 描述
+
+## 3. 详细需求
+
+### 3.1 页面布局
+描述页面整体结构（搜索、工具栏、表格等）。
+
+### 3.2 数据列表 (Table)
+定义表格列：
+- **列名** (Field): 说明
+- **操作列**: 有哪些按钮
+
+### 3.3 编辑/新增表单 (Dialog)
+定义表单字段：
+- **字段名** (Field): 必填/选填，组件类型 (Input/Select/Switch...)
+
+## 4. 数据模型设计 (Typescript)
+```typescript
+interface Entity {
+  id: string;
+  // ... 其他字段
+}
+```
+
+## 5. 组件架构
+```text
+src/views/feature/
+├── README.md           # 本文档
+├── index.vue           # 入口
+└── modules/            # 子组件
+```
+
+## 6. 技术实现细节
+列出关键技术点、Hook 使用或 Mock 策略。
+```
+
+---
+
+## 第八章：附则 (Supplementary Provisions)
+
+### 第16条：宪章的修订
 本宪章随项目发展可进行修订，但修改需经团队核心成员评审通过。
 
-### 第14条：违宪责任
+### 第17条：违宪责任
 违反本宪章的代码将在 Code Review 阶段被无情驳回 (Request Changes)。
 
 ---
