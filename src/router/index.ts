@@ -29,11 +29,21 @@ export const routes: RouteRecordRaw[] = [
       },
       {
         path: 'role',
-        name: 'role',
-        component: () => import('@/views/role/index.vue'),
+        name: 'role-manager',
+        component: () => import('@/views/role-manager/index.vue'),
         meta: {
           title: '角色管理',
           icon: 'Lock',
+          menu: true
+        }
+      },
+      {
+        path: 'department',
+        name: 'department-manager',
+        component: () => import('@/views/department-manager/index.vue'),
+        meta: {
+          title: '部门管理',
+          icon: 'OfficeBuilding',
           menu: true
         }
       },

@@ -2,6 +2,7 @@
 import { reactive, watch, ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import type { FormSchema, FormItem, SelectOption } from './types'
+import JsonTreeSelect from '@/components/JsonTreeSelect/index.vue'
 
 const props = withDefaults(defineProps<{
   schema: FormSchema
@@ -69,7 +70,7 @@ onMounted(() => {
 
 const getPlaceholder = (item: FormItem) => {
   if (item.placeholder) return item.placeholder
-  if (['select', 'cascader', 'date', 'datetime', 'time'].includes(item.type)) {
+  if (['select', 'cascader', 'date', 'datetime', 'time', 'tree-select'].includes(item.type)) {
     return `请选择${item.label}`
   }
   return `请输入${item.label}`
@@ -253,6 +254,19 @@ const handleSubmit = async () => {
               :clearable="item.clearable ?? true"
               :disabled="item.disabled"
               style="width: 100%"
+            />
+
+            <!-- TreeSelect -->
+            <JsonTreeSelect
+              v-else-if="item.type === 'tree-select'"
+              v-model="formData[item.prop]"
+              :data="item.options"
+              :placeholder="getPlaceholder(item)"
+              :multiple="item.multiple"
+              :clearable="item.clearable ?? true"
+              :disabled="item.disabled"
+              :check-strictly="item.checkStrictly"
+              :filterable="item.filterable"
             />
 
             <!-- Slot -->

@@ -119,6 +119,7 @@ export interface TableSchema {
         highlightCurrentRow?: boolean
         // 空数据提示文字
         emptyText?: string
+        [key: string]: any
     }
 }
 

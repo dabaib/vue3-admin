@@ -17,6 +17,7 @@ export type FormItemType =
     | 'checkbox'    // 多选框
     | 'radio'       // 单选框
     | 'slot'        // 自定义插槽
+    | 'tree-select' // 树形选择
 
 // 选项配置
 export interface SelectOption {
@@ -53,6 +54,7 @@ export interface FormItem {
     clearable?: boolean
     multiple?: boolean
     filterable?: boolean
+    checkStrictly?: boolean
     format?: string
     valueFormat?: string
     min?: number
