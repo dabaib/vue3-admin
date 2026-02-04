@@ -3,6 +3,16 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 // 路由配置（菜单会根据这里自动生成）
 export const routes: RouteRecordRaw[] = [
   {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('@/views/dashboard/index.vue'),
+    meta: {
+      title: '数据大屏',
+      icon: 'DataLine', // 假设有这个图标，或者用其他
+      menu: true
+    }
+  },
+  {
     path: '/',
     component: () => import('@/layouts/AdminLayout.vue'),
     children: [
