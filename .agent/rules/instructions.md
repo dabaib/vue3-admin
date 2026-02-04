@@ -1,5 +1,5 @@
 ---
-trigger: glob
+trigger: always_on
 ---
 
 在任何提问开始之前，请阅读以下全部规则，并接下的所有回答用中文回答
