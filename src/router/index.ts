@@ -13,6 +13,26 @@ export const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/dashboard-test',
+    name: 'dashboard-test',
+    component: () => import('@/views/dashboard -test/index.vue'),
+    meta: {
+      title: '大屏测试',
+      icon: 'Platform',
+      menu: true
+    }
+  },
+  {
+    path: '/dashboard-cc',
+    name: 'dashboard-cc',
+    component: () => import('@/views/dashboard-cc/index.vue'),
+    meta: {
+      title: '数据大屏CC',
+      icon: 'DataLine',
+      menu: true
+    }
+  },
+  {
     path: '/',
     component: () => import('@/layouts/AdminLayout.vue'),
     children: [
@@ -94,6 +114,12 @@ export const routes: RouteRecordRaw[] = [
             name: 'demo-form',
             component: () => import('@/views/demo/form/index.vue'),
             meta: { title: '表单组件', menu: true }
+          },
+          {
+            path: 'chart',
+            name: 'demo-chart',
+            component: () => import('@/views/demo/chart-demo.vue'),
+            meta: { title: '图表组件', menu: true }
           }
         ]
       },

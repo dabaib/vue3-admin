@@ -314,3 +314,4 @@ const handleBatchDelete = () => {
 1. **统一交互**: 新增和编辑尽量复用同一个弹窗和表单，通过 `dialogType` 区分逻辑。
 2. **表单重置**: 每次打开弹窗时，记得清空表单数据并调用 `clearValidate()`。
 3. **类型安全**: 充分利用 TS 类型提示，避免拼写错误。
+4. **样式统一**：强制列表页面使用page-container样式，且不允许修改模板page-container样式
