@@ -3,8 +3,8 @@
     <!-- 左侧：标题 + 时间 -->
     <div class="header-left">
       <div class="title-section">
-        <span class="logo-icon">🌐</span>
-        <span class="main-title">大孚数据可视化视觉系统</span>
+        <span class="logo-icon">📊</span>
+        <span class="main-title">数据可视化平台</span>
       </div>
       <div class="time-section">
         <span class="time-block">
@@ -24,15 +24,15 @@
 
     <!-- 中间：斜角导航按钮 -->
     <div class="header-center">
-      <div class="nav-item" v-for="i in 4" :key="i" :class="{ active: i === 1 }">
-        <span class="nav-text">模拟标题一</span>
+      <div class="nav-item" v-for="(item, i) in navItems" :key="i" :class="{ active: activeNav === i }" @click="activeNav = i">
+        <span class="nav-text">{{ item }}</span>
       </div>
     </div>
 
     <!-- 右侧：筛选 -->
     <div class="header-right">
       <div class="filter-box">
-        <select v-model="currentFilter">
+        <select v-model="currentFilter" class="filter-select">
            <option v-for="opt in timeFilters" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
       </div>
@@ -48,6 +48,8 @@ const currentDate = ref('')
 const currentTime = ref('')
 const currentFilter = ref('month')
 const timeFilters = ref<{ label: string; value: string }[]>([])
+const activeNav = ref(0)
+const navItems = ref(['数据总览', '实时监控', '统计分析', '系统设置'])
 let timer: number | null = null
 
 const updateTime = () => {
@@ -119,15 +121,20 @@ onUnmounted(() => {
       margin-right: 10px;
       color: #00F0FF;
       text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+      animation: pulse 2s ease-in-out infinite;
     }
-    
+
     .main-title {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
       color: #fff;
-      letter-spacing: 2px;
-      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      letter-spacing: 4px;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
       font-family: 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(180deg, #fff 0%, #00F0FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   }
 
@@ -135,16 +142,17 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-top: 4px; /* 视觉微调 */
-    
+    margin-top: 4px;
+
     .time-block {
-      font-family: 'Courier New', monospace; /* 模拟数码字体 */
-      font-size: 18px;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
       color: #00F0FF;
       font-weight: bold;
-      
+      text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
+
       .bracket {
-        color: #0070AA;
+        color: #00A0CC;
         margin: 0 2px;
       }
     }
@@ -157,15 +165,15 @@ onUnmounted(() => {
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, 
-      rgba(0, 240, 255, 0) 0%, 
-      rgba(0, 240, 255, 1) 20%, 
-      rgba(0, 240, 255, 1) 80%, 
+    background: linear-gradient(90deg,
+      rgba(0, 240, 255, 0) 0%,
+      rgba(0, 240, 255, 1) 20%,
+      rgba(0, 240, 255, 1) 80%,
       rgba(0, 240, 255, 0) 100%
     );
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
     transform: skewX(-30deg);
-    
+
     &::after {
         content: '';
         position: absolute;
@@ -182,55 +190,98 @@ onUnmounted(() => {
 .header-center {
   display: flex;
   gap: 15px;
-  margin-top: 10px; // 稍微下移以匹配设计
+  margin-top: 10px;
 
   .nav-item {
     position: relative;
-    width: 140px;
+    width: 120px;
     height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(10, 40, 80, 0.6);
     border: 1px solid rgba(0, 100, 200, 0.5);
-    transform: skewX(-30deg);
+    transform: skewX(-20deg);
     cursor: pointer;
     transition: all 0.3s;
-    
+
     .nav-text {
-      color: #fff;
+      color: #B0C4DE;
       font-size: 14px;
       font-weight: 500;
-      transform: skewX(30deg); // 反向倾斜文字
-      letter-spacing: 1px;
+      transform: skewX(20deg);
+      letter-spacing: 2px;
     }
 
-    &:hover, &.active {
+    &:hover {
       background: linear-gradient(90deg, rgba(0, 100, 255, 0.4), rgba(0, 200, 255, 0.1));
       border-color: #00F0FF;
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.3) inset;
-      
+
       .nav-text {
         color: #00F0FF;
-        text-shadow: 0 0 5px rgba(0, 240, 255, 0.8);
+      }
+    }
+
+    &.active {
+      background: linear-gradient(90deg, rgba(0, 80, 160, 0.6), rgba(0, 150, 255, 0.3));
+      border-color: #00F0FF;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4) inset, 0 0 10px rgba(0, 240, 255, 0.3);
+
+      .nav-text {
+        color: #00F0FF;
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.8);
+      }
+
+      // 激活状态下底部高亮线
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 10%;
+        width: 80%;
+        height: 2px;
+        background: #00F0FF;
+        box-shadow: 0 0 5px #00F0FF;
       }
     }
   }
 }
 
 .header-right {
-  .filter-box select {
-     background: rgba(0, 20, 40, 0.8);
-     color: #00F0FF;
-     border: 1px solid #005080;
-     padding: 5px 10px;
-     border-radius: 4px;
-     outline: none;
-     font-size: 14px;
-     
-     &:hover {
-         border-color: #00F0FF;
-     }
+  .filter-box {
+    .filter-select {
+      background: rgba(0, 20, 40, 0.9);
+      color: #00F0FF;
+      border: 1px solid #005080;
+      padding: 8px 15px;
+      border-radius: 0;
+      outline: none;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+
+      &:hover, &:focus {
+        border-color: #00F0FF;
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+      }
+
+      option {
+        background: #0a2850;
+        color: #fff;
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
   }
 }
 </style>

@@ -4,18 +4,26 @@
     <div class="sub-panel left-top">
       <div class="panel-title-bar">
         <span class="decor-line"></span>
-        <span class="title-text">这里是标题名称</span>
+        <span class="title-text">数据接入概况</span>
       </div>
-      
+
       <!-- 服务器总数行 -->
       <div class="server-total-row">
         <div class="icon-ring-wrapper">
            <div class="icon-ring">
-             <span class="icon">🚨</span> <!-- 模拟截图中的警报/服务器图标 -->
+             <!-- 内部旋转环 -->
+             <div class="ring-inner"></div>
+             <!-- 外部旋转环 -->
+             <div class="ring-outer"></div>
+             <!-- 中心发光点 -->
+             <div class="ring-center"></div>
            </div>
         </div>
-        <div class="label-text">服务器总数(台)</div>
-        <div class="value-text">{{ serverStats.totalServers }}</div>
+        <div class="info-section">
+          <div class="label-text">总数据量</div>
+          <div class="value-text">{{ formatNumber(serverStats.totalServers) }}</div>
+          <div class="unit-text">TB</div>
+        </div>
       </div>
 
       <!-- 违规事件卡片 -->
@@ -26,7 +34,7 @@
           <span class="corner c-tr"></span>
           <span class="corner c-bl"></span>
           <span class="corner c-br"></span>
-          
+
           <div class="card-content">
             <div class="card-num">{{ item.value }}</div>
             <div class="card-label">{{ item.label }}</div>
@@ -38,16 +46,14 @@
     <!-- Middle & Bottom remain unchanged for now until user provides specs -->
     <div class="sub-panel left-middle">
       <div class="panel-title-bar">
-        <span class="decor-line"></span>
-        <span class="title-text">流量统计</span>
+        <span class="title-text">接入流量统计</span>
       </div>
       <div class="chart-box" ref="barChartRef"></div>
     </div>
 
     <div class="sub-panel left-bottom">
       <div class="panel-title-bar">
-        <span class="decor-line"></span>
-        <span class="title-text">人员状态</span>
+        <span class="title-text">运维人员状态</span>
       </div>
       <!-- 表格内容 -->
       <div class="custom-table">
@@ -82,6 +88,11 @@ const barChartRef = ref<HTMLElement | null>(null)
 const serverStats = ref<ServerStatsResponse>({ totalServers: 0, events: [] })
 const tableData = ref<StaffItem[]>([])
 
+// 格式化数字（添加千分位）
+const formatNumber = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
 const fetchServerStats = async () => {
     const res = await getServerStats()
     if (res.code === 200) {
@@ -98,62 +109,92 @@ const fetchStaffList = async () => {
 
 const initChart = async () => {
   if (!barChartRef.value) return
-  const myChart = echarts.init(barChartRef.value)
-  
+  const myChart = echarts.init(barChartRef.value, 'dark')
+
   // 先获取数据
   const res = await getTrafficBar()
   if (res.code !== 200) return
 
   const { categories, series } = res.data
-  
+
   const option = {
+    backgroundColor: 'transparent',
     color: ['#00BFFF', '#00E09E'],
-    grid: { 
-      top: '20%', 
-      bottom: '10%', 
-      left: '5%', 
-      right: '5%', 
-      containLabel: true 
+    grid: {
+      top: '20%',
+      bottom: '10%',
+      left: '5%',
+      right: '5%',
+      containLabel: true
     },
-    tooltip: { 
+    tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
-      backgroundColor: 'rgba(10, 30, 60, 0.9)',
+      backgroundColor: 'rgba(10, 30, 60, 0.95)',
       borderColor: '#00F0FF',
-      textStyle: { color: '#fff' }
+      borderWidth: 1,
+      textStyle: { color: '#fff' },
+      padding: [10, 15],
+      extraCssText: 'box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);'
     },
-    legend: { 
-      right: 10, 
+    legend: {
+      right: 10,
       top: 0,
-      textStyle: { color: '#8aa' },
-      itemWidth: 10,
-      itemHeight: 10,
-      icon: 'circle'
+      textStyle: { color: '#B0C4DE', fontSize: 12 },
+      itemWidth: 12,
+      itemHeight: 12,
+      icon: 'roundRect',
+      itemGap: 15
     },
     xAxis: {
       type: 'category',
       data: categories,
-      axisLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } },
+      axisLine: { lineStyle: { color: 'rgba(0, 240, 255, 0.2)' } },
       axisTick: { show: false },
-      axisLabel: { color: '#8aa', fontSize: 12, margin: 10 }
+      axisLabel: {
+        color: '#8aa',
+        fontSize: 12,
+        margin: 10,
+        interval: 0
+      }
     },
     yAxis: {
       type: 'value',
-      splitLine: { show: true, lineStyle: { color: 'rgba(255,255,255,0.05)' } },
-      axisLabel: { color: '#8aa' }
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: 'rgba(255,255,255,0.05)',
+          type: 'dashed'
+        }
+      },
+      axisLabel: { color: '#8aa', fontSize: 11 },
+      axisLine: { show: false }
     },
     series: series.map((item, index) => ({
       name: item.name,
       type: 'bar',
-      barWidth: 12,
-      itemStyle: { 
-         color: index === 0 ? '#00BFFF' : '#00E09E',
-         borderRadius: [2, 2, 0, 0]
+      barWidth: 14,
+      barGap: '30%',
+      itemStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: index === 0 ? '#00D4FF' : '#00F0FF' },
+          { offset: 1, color: index === 0 ? '#0060AA' : '#00A0AA' }
+        ]),
+        borderRadius: [4, 4, 0, 0],
+        shadowBlur: 10,
+        shadowColor: index === 0 ? 'rgba(0, 191, 255, 0.3)' : 'rgba(0, 224, 158, 0.3)'
       },
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 15,
+          shadowColor: index === 0 ? 'rgba(0, 191, 255, 0.5)' : 'rgba(0, 224, 158, 0.5)'
+        }
+      },
+      animationDelay: (idx: number) => idx * 50,
       data: item.data
     }))
   }
-  
+
   myChart.setOption(option)
   window.addEventListener('resize', () => myChart.resize())
 }
@@ -176,31 +217,64 @@ onMounted(() => {
 }
 
 .sub-panel {
-  background: rgba(13, 22, 45, 0.6);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  background: rgba(13, 22, 45, 0.7);
+  border: 1px solid rgba(0, 140, 255, 0.3);
+  border-radius: 4px;
   padding: 15px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+
+  // 面板内发光效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at top, rgba(0, 240, 255, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  &:hover {
+    border-color: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.1) inset;
+  }
 }
 
 .panel-title-bar {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
-  height: 36px;
+  height: 40px;
   background: linear-gradient(90deg, rgba(20, 60, 120, 0.8) 0%, rgba(20, 60, 120, 0.3) 50%, rgba(20, 60, 120, 0) 100%);
   position: relative;
-  padding-left: 15px; // 调整 padding
-  border-left: 4px solid #00F0FF; // 加粗左侧高亮线替代装饰
-  
+  padding-left: 15px;
+  border-left: 4px solid #00F0FF;
+
+  // 标题右侧装饰线
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0, 240, 255, 0.5), transparent);
+  }
+
   // 标题文字
   .title-text {
-      color: #fff;
-      font-size: 18px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      font-family: 'Microsoft YaHei', sans-serif;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-family: 'Microsoft YaHei', sans-serif;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   }
 
   .decor-line { display: none; }
@@ -208,88 +282,98 @@ onMounted(() => {
 
 // Left Top Specific Styles
 .left-top {
-    flex: 1; 
+    flex: 1;
     border: 1px solid rgba(0, 80, 150, 0.5);
     background: rgba(10, 20, 40, 0.8);
 
     .server-total-row {
         display: flex;
         align-items: center;
-        padding: 10px 15px;
-        margin-bottom: 10px;
-        
+        padding: 15px;
+        margin-bottom: 15px;
+        background: linear-gradient(90deg, rgba(0, 40, 80, 0.4) 0%, rgba(0, 20, 40, 0.2) 100%);
+        border-radius: 4px;
+
         .icon-ring-wrapper {
-            margin-right: 15px;
-            
+            margin-right: 20px;
+            flex-shrink: 0;
+
             .icon-ring {
-                width: 50px;
-                height: 50px;
+                width: 70px;
+                height: 70px;
                 border-radius: 50%;
                 position: relative;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background: radial-gradient(circle, rgba(0, 240, 255, 0.2) 0%, rgba(0, 0, 0, 0.6) 80%);
-                border: 1px solid rgba(0, 240, 255, 0.3); // 最外层细圈
-                
-                // 内部中心球体发光
-                &::after {
-                    content: '';
-                    position: absolute;
-                    width: 34px;
-                    height: 34px;
-                    border-radius: 50%;
-                    background: radial-gradient(circle at 30% 30%, rgba(0,240,255,0.8), rgba(0,160,200,0.4));
-                    box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-                    z-index: 1;
-                }
 
-                // 旋转的分段圆环装饰
-                &::before {
-                    content: '';
+                // 外部旋转环
+                .ring-outer {
                     position: absolute;
-                    top: 4px;
-                    left: 4px;
-                    right: 4px;
-                    bottom: 4px;
-                    border-radius: 50%;
-                    border: 3px solid transparent;
-                    border-top-color: #00F0FF; // 上弧
-                    border-bottom-color: #00F0FF; // 下弧
-                    border-left-color: rgba(0, 240, 255, 0.3); // 左弧变淡
-                    animation: spin 3s linear infinite; // 增加动态旋转
-                    z-index: 2;
-                }
-                
-                // 静态装饰弧线 (额外增加层次感)
-                .icon-arc {
-                    position: absolute;
-                    top: -2px;
-                    left: -2px;
-                    width: 54px;
-                    height: 54px;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
                     border-radius: 50%;
                     border: 2px solid transparent;
-                    border-right-color: #00F0FF;
-                    transform: rotate(45deg);
-                    opacity: 0.6;
+                    border-top-color: #00F0FF;
+                    border-right-color: rgba(0, 240, 255, 0.5);
+                    border-bottom-color: rgba(0, 240, 255, 0.2);
+                    border-left-color: rgba(0, 240, 255, 0.5);
+                    animation: spin 4s linear infinite;
                 }
 
-                .icon { display: none; } // 隐藏原来的文字图标，因为球体本身已经很丰富
+                // 内部旋转环
+                .ring-inner {
+                    position: absolute;
+                    top: 8px;
+                    left: 8px;
+                    width: calc(100% - 16px);
+                    height: calc(100% - 16px);
+                    border-radius: 50%;
+                    border: 2px solid transparent;
+                    border-bottom-color: #00E09E;
+                    border-left-color: rgba(0, 224, 158, 0.5);
+                    animation: spin-reverse 3s linear infinite;
+                }
+
+                // 中心发光点
+                .ring-center {
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    background: radial-gradient(circle, #00F0FF 0%, rgba(0, 100, 200, 0.8) 100%);
+                    box-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 40px rgba(0, 240, 255, 0.4);
+                    animation: pulse-center 2s ease-in-out infinite;
+                    z-index: 10;
+                }
             }
         }
-        
-        .label-text {
+
+        .info-section {
             flex: 1;
-            color: #fff;
-            font-size: 16px;
-        }
-        
-        .value-text {
-            color: #00F0FF;
-            font-size: 28px;
-            font-family: 'Arial', sans-serif;
-            font-weight: bold;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+
+            .label-text {
+                color: #B0C4DE;
+                font-size: 16px;
+            }
+
+            .value-text {
+                color: #00F0FF;
+                font-size: 36px;
+                font-family: 'Arial', sans-serif;
+                font-weight: bold;
+                text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+                line-height: 1;
+            }
+
+            .unit-text {
+                color: #00A0CC;
+                font-size: 14px;
+            }
         }
     }
 
@@ -297,22 +381,40 @@ onMounted(() => {
         display: flex;
         justify-content: space-between;
         gap: 10px;
-        
+
         .corner-card {
             position: relative;
             flex: 1;
-            height: 80px;
-            background: rgba(20, 60, 100, 0.3);
+            height: 75px;
+            background: linear-gradient(180deg, rgba(20, 60, 100, 0.3) 0%, rgba(10, 40, 80, 0.2) 100%);
             border: 1px solid rgba(0, 140, 255, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            
+            overflow: hidden;
+            transition: all 0.3s;
+
+            // 背景网格装饰
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image:
+                    linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+                background-size: 10px 10px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
             // Corner Accents
             .corner {
                 position: absolute;
-                width: 8px;
-                height: 8px;
+                width: 10px;
+                height: 10px;
                 border-color: #00F0FF;
                 border-style: solid;
                 transition: all 0.3s;
@@ -321,26 +423,63 @@ onMounted(() => {
             .c-tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
             .c-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
             .c-br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-            
+
             .card-content {
                 text-align: center;
+                z-index: 1;
                 .card-num {
-                    color: #00A0FF;
-                    font-size: 20px;
+                    color: #00BFFF;
+                    font-size: 24px;
                     font-weight: bold;
+                    margin-bottom: 5px;
+                    text-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
                 }
                 .card-label {
-                    color: #aaa;
+                    color: #8aa;
                     font-size: 12px;
                 }
             }
-            
+
             &:hover {
                 background: rgba(20, 60, 100, 0.5);
-                .corner { border-color: #00E09E; box-shadow: 0 0 5px #00E09E; }
-                .card-num { color: #00E09E; }
+                border-color: #00F0FF;
+                box-shadow: 0 0 15px rgba(0, 240, 255, 0.3) inset;
+
+                &::before {
+                    opacity: 1;
+                }
+
+                .corner {
+                    border-color: #00E09E;
+                    box-shadow: 0 0 5px #00E09E;
+                }
+                .card-num {
+                    color: #00E09E;
+                    text-shadow: 0 0 8px rgba(0, 224, 158, 0.6);
+                }
             }
         }
+    }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+
+@keyframes pulse-center {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
     }
 }
 

@@ -12,7 +12,7 @@ export interface HeaderConfig {
 // 2. Left Column
 export interface ServerStat {
     label: string
-    value: number
+    value: number | string
     id: string
 }
 
@@ -113,6 +113,8 @@ export interface LocalizationResponse {
 export interface NotificationItem {
     title: string
     content: string
+    time?: string
+    type?: 'info' | 'warning' | 'danger' | 'success'
 }
 
 export interface NotificationResponse {

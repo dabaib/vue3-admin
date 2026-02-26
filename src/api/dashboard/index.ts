@@ -38,11 +38,11 @@ export const getServerStats = async (): Promise<ApiResponse<ServerStatsResponse>
         code: 200,
         msg: 'success',
         data: {
-            totalServers: 198,
+            totalServers: 15280,
             events: [
-                { label: '违规事件总数', value: 1234, id: 'event_1' },
-                { label: '违规事件总数', value: 567, id: 'event_2' },
-                { label: '违规事件总数', value: 4568, id: 'event_3' }
+                { label: '今日接入', value: '1,245', id: 'event_1' },
+                { label: '成功率', value: '99.8%', id: 'event_2' },
+                { label: '异常数', value: '23', id: 'event_3' }
             ]
         }
     }
@@ -54,15 +54,15 @@ export const getTrafficBar = async (): Promise<ApiResponse<TrafficBarResponse>> 
         code: 200,
         msg: 'success',
         data: {
-            categories: ['标题1', '标题2', '标题3', '标题4', '标题5', '标题6', '标题7'],
+            categories: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
             series: [
                 {
-                    name: '数据标题1',
-                    data: [30, 80, 50, 90, 40, 60, 85]
+                    name: '接入流量',
+                    data: [3200, 4200, 3800, 4500, 4100, 2800, 2400]
                 },
                 {
-                    name: '数据标题2',
-                    data: [20, 60, 40, 70, 30, 50, 75]
+                    name: '处理流量',
+                    data: [3100, 4100, 3700, 4400, 4000, 2700, 2300]
                 }
             ]
         }
@@ -94,18 +94,18 @@ export const getTopology = async (): Promise<ApiResponse<TopologyResponse>> => {
         code: 200,
         msg: 'success',
         data: {
-            centerNode: { name: 'XXXXX', status: 'active' },
+            centerNode: { name: '数据中心', status: 'active' },
             nodes: [
-                { id: 1, name: '机构总数(家)', value: 18, ip: '1.1.1.94' },
-                { id: 2, name: '机构总数(家)', value: 22 },
-                { id: 3, name: '网络攻击(3个)', details: ['1.1.1.94', '172.160.0.1', '1567.87.5'] },
-                { id: 4, name: '异常访问(5个)', details: ['172.160.0.1', '172.1620.0.1'] }
+                { id: 1, name: '数据源A', value: '2,345/s', ip: '192.168.1.10' },
+                { id: 2, name: '数据源B', value: '1,890/s', ip: '192.168.1.20' },
+                { id: 3, name: '网络攻击(3个)', details: ['10.0.0.1', '10.0.0.2', '10.0.0.3'] },
+                { id: 4, name: '异常访问(2个)', details: ['172.16.0.1', '172.16.0.2'] }
             ],
             connections: [
-                { source: 'XXXXX', target: 1 },
-                { source: 'XXXXX', target: 2 },
-                { source: 'XXXXX', target: 3 },
-                { source: 'XXXXX', target: 4 }
+                { source: '数据中心', target: 1 },
+                { source: '数据中心', target: 2 },
+                { source: '数据中心', target: 3 },
+                { source: '数据中心', target: 4 }
             ]
         }
     }
@@ -118,10 +118,10 @@ export const getCategoryPie = async (): Promise<ApiResponse<CategoryPieResponse>
         msg: 'success',
         data: {
             data: [
-                { name: '绝密', value: 213 },
-                { name: '机密', value: 213 },
-                { name: '秘密', value: 213 },
-                { name: '内部', value: 213 }
+                { name: '结构化数据', value: 3520 },
+                { name: '非结构化数据', value: 2840 },
+                { name: '半结构化数据', value: 1650 },
+                { name: '其他', value: 890 }
             ]
         }
     }
@@ -133,11 +133,11 @@ export const getAccessTrend = async (): Promise<ApiResponse<AccessTrendResponse>
         code: 200,
         msg: 'success',
         data: {
-            xAxis: ['标题1', '标题2', '标题3', '标题4', '标题5', '标题6', '标题7', '标题8', '标题9'],
+            xAxis: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '23:59'],
             series: [
-                { name: '数据标题1', data: [15, 60, 30, 80, 50, 60, 50, 45, 30] },
-                { name: '数据标题2', data: [10, 50, 20, 40, 60, 30, 25, 35, 20] },
-                { name: '数据标题3', data: [5, 20, 10, 15, 40, 15, 20, 25, 15] }
+                { name: '实时接入量', data: [1200, 1800, 2500, 3200, 2800, 3500, 3100, 2400, 1900] },
+                { name: '处理完成量', data: [1150, 1750, 2450, 3150, 2750, 3420, 3050, 2350, 1850] },
+                { name: '异常处理量', data: [50, 50, 50, 50, 50, 80, 50, 50, 50] }
             ]
         }
     }
@@ -167,13 +167,13 @@ export const getLocalization = async (): Promise<ApiResponse<LocalizationRespons
         code: 200,
         msg: 'success',
         data: {
-            stat1: { label: '这里是文字', value: 548 },
-            stat2: { label: '这里是文字', value: 456 },
+            stat1: { label: '已替代设备', value: 85 },
+            stat2: { label: '待替代设备', value: 27 },
             progress: {
                 total: 112,
-                current: 80,
+                current: 85,
                 label: '国产化',
-                percentage: 71.4
+                percentage: 75.9
             }
         }
     }
@@ -186,9 +186,12 @@ export const getNotifications = async (): Promise<ApiResponse<NotificationRespon
         msg: 'success',
         data: {
             list: [
-                { title: '此处是标题内容', content: '此处是内容此处处理内容此处是内容此处处理内容此处是内容。' },
-                { title: '此处是标题内容', content: '此处是内容此处处理内容此处是内容此处处理内容此处是内容。' },
-                { title: '此处是标题内容', content: '此处是内容此处处理内容此处是内容此处处理内容此处是内容。' }
+                { title: '系统升级通知', content: '数据可视化平台将于今晚22:00进行系统升级，预计耗时2小时。', time: '10分钟前', type: 'info' },
+                { title: '数据接入异常', content: '数据源B连接超时，请检查网络配置状态。', time: '30分钟前', type: 'warning' },
+                { title: '安全警告', content: '检测到异常访问行为，已自动拦截，请关注安全日志。', time: '1小时前', type: 'danger' },
+                { title: '新功能上线', content: '实时数据监控功能已上线，欢迎体验使用。', time: '2小时前', type: 'success' },
+                { title: '定期维护提醒', content: '下周三将进行定期维护，请提前做好数据备份。', time: '昨天', type: 'info' },
+                { title: '性能优化完成', content: '图表渲染性能优化完成，加载速度提升50%。', time: '2天前', type: 'success' }
             ]
         }
     }

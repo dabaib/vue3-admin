@@ -5,17 +5,15 @@
       <div class="panel-title-bar">
         <span class="title-text">设备总览</span>
       </div>
-      <div class="device-total-card">
-        <div class="icon-box">
-            <div class="hex-shape">
-                <span class="icon">📋</span>
-            </div>
+      <!-- 总数大数字展示 -->
+      <div class="total-number-section">
+        <div class="number-display">
+          <span class="number">{{ formatNumber(deviceData.totalDevices) }}</span>
+          <span class="unit">台</span>
         </div>
-        <div class="info">
-           <div class="label">设备总数量</div>
-           <div class="value">{{ deviceData.totalDevices }}</div>
-        </div>
+        <div class="number-label">设备总数量</div>
       </div>
+      <!-- 设备分类网格 -->
       <div class="device-grid">
          <div class="grid-item" v-for="item in deviceData.details" :key="item.label">
             <div class="val">{{ item.value }}</div>
@@ -29,34 +27,30 @@
       <div class="panel-title-bar">
         <span class="title-text">国产化情况</span>
       </div>
+      <!-- 两个统计数字 -->
       <div class="stats-row">
-         <div class="stat-item">
-             <div class="icon-cyl">
-                 <span class="icon">📶</span>
-             </div>
-             <div class="val text-blue">{{ localizationData.stat1.value }}</div>
-             <div class="lbl">{{ localizationData.stat1.label }}</div>
+         <div class="stat-card">
+             <div class="stat-value">{{ localizationData.stat1.value }}</div>
+             <div class="stat-label">{{ localizationData.stat1.label }}</div>
          </div>
-         <div class="stat-item">
-             <div class="icon-cyl">
-                 <span class="icon">📶</span>
-             </div>
-             <div class="val text-blue">{{ localizationData.stat2.value }}</div>
-             <div class="lbl">{{ localizationData.stat2.label }}</div>
+         <div class="stat-card">
+             <div class="stat-value">{{ localizationData.stat2.value }}</div>
+             <div class="stat-label">{{ localizationData.stat2.label }}</div>
          </div>
       </div>
-      
+
+      <!-- 进度条 -->
       <div class="progress-section">
           <div class="prog-label">
               <span>{{ localizationData.progress.label }}替代情况</span>
-              <div class="dots">
-                 <span class="dot green">●</span> 数据开通
-                 <span class="dot blue">●</span> 数据示意
+              <div class="legend">
+                 <span class="legend-item"><span class="dot green"></span>数据开通</span>
+                 <span class="legend-item"><span class="dot blue"></span>数据示意</span>
               </div>
           </div>
           <div class="progress-bar-bg">
-              <div class="dserver-count">服务器 {{ localizationData.progress.total }}</div>
-               <div class="progress-bar-fill" :style="{ width: localizationData.progress.percentage + '%' }"></div>
+              <div class="progress-bar-fill" :style="{ width: localizationData.progress.percentage + '%' }"></div>
+              <div class="progress-tooltip">服务器 {{ localizationData.progress.total }}</div>
           </div>
       </div>
     </div>
@@ -64,16 +58,16 @@
     <!-- Bottom: 通知列表 -->
     <div class="sub-panel item-bottom">
       <div class="panel-title-bar">
-        <span class="title-text">通知列表</span>
+        <span class="title-text">系统通知</span>
+        <span class="more-link">更多 ></span>
       </div>
       <div class="info-list">
          <div class="info-item" v-for="(item, i) in notificationList" :key="i">
-             <div class="icon-hex">
-                <span>🔔</span>
-             </div>
+             <div class="item-dot" :class="item.type || 'info'"></div>
              <div class="content">
                  <div class="info-title">{{ item.title }}</div>
                  <div class="info-desc">{{ item.content }}</div>
+                 <div class="info-time">{{ item.time || '刚刚' }}</div>
              </div>
          </div>
       </div>
@@ -89,6 +83,11 @@ import type { DeviceOverviewResponse, LocalizationResponse, NotificationItem } f
 const deviceData = ref<DeviceOverviewResponse>({ totalDevices: 0, details: [] })
 const localizationData = ref<LocalizationResponse | null>(null)
 const notificationList = ref<NotificationItem[]>([])
+
+// 格式化数字
+const formatNumber = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
 
 const fetchDeviceData = async () => {
     const res = await getDeviceOverview()
@@ -120,339 +119,447 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .panel-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     height: 100%;
 }
 
 .sub-panel {
-  background: rgba(13, 22, 45, 0.6);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  background: rgba(13, 22, 45, 0.7);
+  border: 1px solid rgba(0, 140, 255, 0.3);
+  border-radius: 4px;
   padding: 15px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px; // 间距
-  
-  &:last-child { margin-bottom: 0; }
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+
+  // 面板内发光效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at top, rgba(0, 240, 255, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  &:hover {
+    border-color: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.1) inset;
+  }
 }
 
 // 复用标题栏样式
 .panel-title-bar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 15px;
-  height: 36px;
+  height: 40px;
   background: linear-gradient(90deg, rgba(20, 60, 120, 0.8) 0%, rgba(20, 60, 120, 0.3) 50%, rgba(20, 60, 120, 0) 100%);
   position: relative;
   padding-left: 15px;
+  padding-right: 15px;
   border-left: 4px solid #00F0FF;
-  
+
+  // 标题右侧装饰线
+  &::after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0, 240, 255, 0.5), transparent);
+  }
+
   .title-text {
-      color: #fff;
-      font-size: 18px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      font-family: 'Microsoft YaHei', sans-serif;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-family: 'Microsoft YaHei', sans-serif;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   }
 }
 
 .item-top {
-    flex: 0 0 35%; // 增加高度占比
+    flex: 0 0 auto;
 
-    .device-total-card {
-        background: linear-gradient(90deg, rgba(0, 50, 100, 0.6) 0%, rgba(0, 20, 40, 0.3) 100%);
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        margin: 15px 0;
+    // 总数大数字展示
+    .total-number-section {
+        text-align: center;
+        padding: 20px 0;
+        background: linear-gradient(180deg, rgba(0, 60, 120, 0.3) 0%, rgba(0, 30, 60, 0.1) 100%);
         border-radius: 4px;
+        margin-bottom: 15px;
         position: relative;
-        
-        // 左边框装饰
+        overflow: hidden;
+
+        // 背景装饰
         &::before {
             content: '';
             position: absolute;
+            top: 0;
             left: 0;
-            top: 10%;
-            height: 80%;
-            width: 2px;
-            background: #00F0FF;
-            opacity: 0.5;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
         }
-        
-        // 发光六边形图标
-        .icon-box {
-            width: 60px;
-            height: 60px;
-            margin-right: 25px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            
-            // 外发光晕
-            filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
 
-            .hex-shape {
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(135deg, #00C0FF, #0060A0);
-                clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                
-                // 内部边框效果(模拟)
-                &::after {
-                    content: '';
-                    position: absolute;
-                    width: 80%;
-                    height: 80%;
-                    background: rgba(0, 30, 60, 0.6);
-                    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-                    z-index: 1;
-                }
-                
-                .icon {
-                    position: relative;
-                    z-index: 2;
-                    font-size: 24px;
-                    color: #fff;
-                }
+        .number-display {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            z-index: 1;
+
+            .number {
+                font-size: 48px;
+                font-weight: bold;
+                font-family: 'Arial', sans-serif;
+                background: linear-gradient(180deg, #00F0FF 0%, #0080AA 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            }
+
+            .unit {
+                font-size: 16px;
+                color: #00A0CC;
             }
         }
-        
-        .info {
-            .label { color: #8aa; font-size: 14px; margin-bottom: 5px; }
-            .value { 
-                color: #00F0FF; 
-                font-size: 32px; 
-                font-weight: bold; 
-                text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
-            }
+
+        .number-label {
+            color: #B0C4DE;
+            font-size: 14px;
+            margin-top: 5px;
+            position: relative;
+            z-index: 1;
         }
     }
-    
+
+    // 设备分类网格
     .device-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        margin-top: 15px;
-        
+        gap: 10px;
+
         .grid-item {
             text-align: center;
-            position: relative;
-            
-            // 右侧分割线
-            &:not(:last-child)::after {
-                content: '';
-                position: absolute;
-                right: 0;
-                top: 20%;
-                height: 60%;
-                width: 1px;
-                background: rgba(255, 255, 255, 0.1);
+            padding: 15px 5px;
+            background: rgba(0, 40, 80, 0.3);
+            border: 1px solid rgba(0, 140, 255, 0.2);
+            border-radius: 4px;
+            transition: all 0.3s;
+            cursor: pointer;
+
+            &:hover {
+                background: rgba(0, 60, 120, 0.4);
+                border-color: #00F0FF;
+                box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
             }
 
-            .val { 
-                color: #fff; 
-                font-size: 20px; 
-                font-weight: bold; 
+            .val {
+                color: #fff;
+                font-size: 22px;
+                font-weight: bold;
                 margin-bottom: 5px;
             }
-            .lbl { color: #aaa; font-size: 13px; }
+            .lbl {
+                color: #8aa;
+                font-size: 12px;
+            }
         }
     }
 }
 
 .item-middle {
-    flex: 0 0 25%;
-    
+    flex: 0 0 auto;
+
+    // 统计数字行
     .stats-row {
         display: flex;
-        justify-content: space-around;
-        margin: 20px 0;
-        
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            
-            .icon-cyl {
-                width: 60px;
-                height: 40px;
-                position: relative;
-                margin-bottom: 10px;
-                
-                // 圆柱体底座光效
-                &::before {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 5%;
-                    width: 90%;
-                    height: 10px;
-                    border-radius: 50%;
-                    background: rgba(0, 240, 255, 0.3);
-                    box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-                    border: 1px solid rgba(0, 240, 255, 0.6);
-                }
-                
-                // 内部图标 (Wifi)
-                .icon {
-                    position: absolute;
-                    bottom: 10px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    font-size: 24px;
-                    color: #00F0FF;
-                    text-shadow: 0 0 5px #00F0FF;
-                }
-                
-                // 顶部虚线框装饰 (模拟圆柱体)
-                &::after {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 10%;
-                    width: 80%;
-                    height: 30px;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    border-bottom: none;
-                    border-radius: 50% 50% 0 0;
-                }
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 20px;
+
+        .stat-card {
+            flex: 1;
+            text-align: center;
+            padding: 15px 10px;
+            background: linear-gradient(180deg, rgba(0, 60, 120, 0.3) 0%, rgba(0, 30, 60, 0.1) 100%);
+            border: 1px solid rgba(0, 140, 255, 0.2);
+            border-radius: 4px;
+            transition: all 0.3s;
+
+            &:hover {
+                background: linear-gradient(180deg, rgba(0, 80, 140, 0.4) 0%, rgba(0, 40, 80, 0.2) 100%);
+                border-color: #00F0FF;
+                box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
             }
 
-            .val { font-size: 28px; font-weight: bold; color: #00F0FF; margin-bottom: 2px; }
-            .lbl { color: #aaa; font-size: 13px; }
+            .stat-value {
+                font-size: 28px;
+                font-weight: bold;
+                color: #00F0FF;
+                text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+                margin-bottom: 5px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+                color: #8aa;
+            }
         }
     }
-    
+
+    // 进度条区域
     .progress-section {
-        padding: 0 10px;
-        
+        padding: 0 5px;
+
         .prog-label {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             color: #fff;
             font-size: 14px;
-            margin-bottom: 30px; // 留出空间给Tooltip
-            
-            .dots span { margin-left: 10px; font-size: 12px; }
-            .green { color: #00E09E; }
-            .blue { color: #1E90FF; }
+            margin-bottom: 15px;
+
+            .legend {
+                display: flex;
+                gap: 15px;
+
+                .legend-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    font-size: 12px;
+                    color: #8aa;
+
+                    .dot {
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 50%;
+                        box-shadow: 0 0 5px currentColor;
+
+                        &.green {
+                            background: #00E09E;
+                            color: #00E09E;
+                        }
+                        &.blue {
+                            background: #1E90FF;
+                            color: #1E90FF;
+                        }
+                    }
+                }
+            }
         }
-        
+
         .progress-bar-bg {
-            height: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
             position: relative;
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            
+            border: 1px solid rgba(0, 140, 255, 0.2);
+            overflow: visible;
+
             .progress-bar-fill {
                 height: 100%;
                 background: linear-gradient(90deg, #00E09E 0%, #00F0FF 100%);
-                border-radius: 8px;
+                border-radius: 6px;
                 position: relative;
-                
-                // 悬浮Tooltip样式
+                transition: width 1s ease-out;
+                box-shadow: 0 0 10px rgba(0, 224, 158, 0.4);
+
+                // 进度条右侧发光点
                 &::after {
-                    content: '● 国产化\A 服务器 112'; // \A for newline
-                    white-space: pre;
-                    position: absolute;
-                    right: -10px; // 偏移微调
-                    bottom: 25px; // 位于进度条上方
-                    background: rgba(10, 40, 70, 0.9);
-                    border: 1px solid #00F0FF;
-                    color: #fff;
-                    padding: 5px 10px;
-                    border-radius: 4px;
-                    font-size: 12px;
-                    line-height: 1.4;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-                }
-                
-                // Tooltip小箭头
-                &::before {
                     content: '';
                     position: absolute;
                     right: 0;
-                    bottom: 18px;
-                    border-width: 5px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 4px;
+                    height: 16px;
+                    background: #fff;
+                    border-radius: 2px;
+                    box-shadow: 0 0 10px #00F0FF, 0 0 20px #00F0FF;
+                }
+            }
+
+            // 悬浮提示
+            .progress-tooltip {
+                position: absolute;
+                right: 0;
+                top: -35px;
+                transform: translateX(50%);
+                background: rgba(10, 40, 70, 0.95);
+                border: 1px solid #00F0FF;
+                color: #fff;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-size: 12px;
+                white-space: nowrap;
+                box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -6px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    border-width: 6px 6px 0;
                     border-style: solid;
                     border-color: #00F0FF transparent transparent transparent;
                 }
             }
-            
-            // 移除旧的 .dserver-count
-            .dserver-count { display: none; }
         }
     }
 }
 
 .item-bottom {
     flex: 1;
-    overflow-y: auto;
-    
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .panel-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .more-link {
+        color: #00F0FF;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+          color: #00E09E;
+          text-shadow: 0 0 5px rgba(0, 224, 158, 0.5);
+        }
+      }
+    }
+
     .info-list {
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 0;
         margin-top: 10px;
-        
+        flex: 1;
+        overflow-y: auto;
+
+        // 自定义滚动条
+        &::-webkit-scrollbar {
+            width: 4px;
+        }
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        &::-webkit-scrollbar-thumb {
+            background: rgba(0, 240, 255, 0.3);
+            border-radius: 2px;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 240, 255, 0.5);
+        }
+
         .info-item {
             display: flex;
-            align-items: center;
-            background: rgba(0, 30, 60, 0.4);
-            padding: 15px;
-            border: 1px solid #0070C0;
-            box-shadow: inset 0 0 10px rgba(0, 112, 192, 0.2);
+            align-items: flex-start;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+            cursor: pointer;
             position: relative;
-            
-            &:hover {
-                background: rgba(0, 50, 100, 0.5);
-                border-color: #00F0FF;
+
+            // 左侧装饰线
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: #00F0FF;
+                opacity: 0;
+                transition: opacity 0.3s;
             }
-            
-            .icon-hex {
-                width: 50px;
-                height: 50px;
-                margin-right: 15px;
-                background: linear-gradient(135deg, rgba(0, 192, 255, 0.2), rgba(0, 96, 160, 0.6));
-                clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border: 1px solid rgba(0, 240, 255, 0.5); // 模拟边框
-                
-                // 内部六边形边框效果
-                &::after {
-                    content: '';
-                    position: absolute;
-                    width: 70%;
-                    height: 70%;
-                    border: 1px solid #00F0FF;
-                    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+
+            &:hover {
+                background: rgba(0, 50, 100, 0.3);
+
+                &::before {
+                    opacity: 1;
                 }
 
-                span {
-                    font-size: 20px;
-                    z-index: 2;
+                .info-title {
+                    color: #00F0FF;
                 }
             }
-            
+
+            .item-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                margin-right: 12px;
+                margin-top: 6px;
+                flex-shrink: 0;
+                box-shadow: 0 0 8px currentColor;
+
+                &.info {
+                    background: #00F0FF;
+                    color: #00F0FF;
+                }
+                &.warning {
+                    background: #FFA500;
+                    color: #FFA500;
+                }
+                &.danger {
+                    background: #FF4D4D;
+                    color: #FF4D4D;
+                }
+                &.success {
+                    background: #00E09E;
+                    color: #00E09E;
+                }
+            }
+
             .content {
                 flex: 1;
-                
-                .info-title { 
-                    color: #fff; 
-                    font-size: 15px; 
-                    font-weight: bold; 
-                    margin-bottom: 5px; 
+                min-width: 0;
+
+                .info-title {
+                    color: #B0C4DE;
+                    font-size: 14px;
+                    font-weight: 500;
+                    margin-bottom: 4px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    transition: color 0.3s;
                 }
-                .info-desc { 
-                    color: #8aa; 
-                    font-size: 13px; 
-                    line-height: 1.5; 
+                .info-desc {
+                    color: #8aa;
+                    font-size: 12px;
+                    line-height: 1.4;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    margin-bottom: 4px;
+                }
+                .info-time {
+                    color: #668;
+                    font-size: 11px;
                 }
             }
         }
