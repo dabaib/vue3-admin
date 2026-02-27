@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 // 统计数据
 const stats = ref([
-  { title: '总用户数', value: '12,345', icon: 'User', color: '#409eff', bg: '#ecf5ff' },
+  { title: '总用户数', value: '12,345', icon: 'User', color: 'var(--el-color-primary)', bg: 'var(--el-color-primary-light-9, #ecf5ff)' },
   { title: '今日访问', value: '1,234', icon: 'View', color: '#67c23a', bg: '#f0f9eb' },
   { title: '销售金额', value: '¥89,012', icon: 'Money', color: '#e6a23c', bg: '#fdf6ec' },
   { title: '待处理订单', value: '56', icon: 'ShoppingCart', color: '#f56c6c', bg: '#fef0f0' }
@@ -61,7 +61,7 @@ const activities = ref([
           <el-row :gutter="16">
             <el-col :span="8" v-for="item in shortcuts" :key="item.title">
               <div class="shortcut-item" @click="$router.push(item.path)">
-                <el-icon :size="32" color="#409eff">
+                <el-icon :size="32" color="var(--el-color-primary)">
                   <component :is="item.icon" />
                 </el-icon>
                 <span>{{ item.title }}</span>
@@ -174,7 +174,7 @@ const activities = ref([
 
     .activity-user {
       font-weight: 600;
-      color: #409eff;
+      color: var(--el-color-primary);
     }
   }
 }

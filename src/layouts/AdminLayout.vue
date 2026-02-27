@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRouter, useRoute, type RouteRecordRaw } from 'vue-router'
 import { routes } from '@/router'
 
@@ -44,11 +44,22 @@ const toggleCollapse = () => {
   isCollapse.value = !isCollapse.value
 }
 
-// 全屏切换
-import { useFullscreen } from '@vueuse/core'
+// 全屏切换与主题
+import { useFullscreen, useStorage } from '@vueuse/core'
 import TagsView from './components/TagsView.vue'
 
 const { isFullscreen, toggle } = useFullscreen()
+
+// 主题颜色控制
+const currentTheme = useStorage('app-theme', 'theme-blue')
+
+const changeTheme = (theme: string) => {
+  currentTheme.value = theme
+}
+
+watch(currentTheme, (val) => {
+  document.documentElement.className = val
+}, { immediate: true })
 
 // 定义大屏/外部路由，这些路由将会在新标签页中打开
 const topRoutes = computed(() => {
@@ -103,9 +114,9 @@ const handleUserCommand = (command: string) => {
         :default-active="activeMenu"
         :collapse="isCollapse"
         :collapse-transition="false"
-        background-color="#001529"
-        text-color="#ffffffa6"
-        active-text-color="#fff"
+        background-color="var(--sidebar-bg-color)"
+        text-color="var(--sidebar-text-color)"
+        active-text-color="var(--sidebar-text-active)"
         class="layout-menu"
         @select="handleMenuSelect"
       >
@@ -184,6 +195,30 @@ const handleUserCommand = (command: string) => {
             </div>
           </el-popover>
 
+          <!-- 主题切换 -->
+          <div class="theme-dropdown-wrapper">
+            <el-dropdown @command="changeTheme" trigger="click">
+              <span class="el-dropdown-link" style="display: flex; align-items: center; outline: none;">
+                <el-tooltip content="主题配色" placement="bottom">
+                  <el-icon class="header-icon"><Brush /></el-icon>
+                </el-tooltip>
+              </span>
+              <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="theme-blue" :class="{ 'is-active-theme': currentTheme === 'theme-blue' }">
+                  <span class="theme-dot" style="background:#1890ff"></span>经典蓝
+                </el-dropdown-item>
+                <el-dropdown-item command="theme-red" :class="{ 'is-active-theme': currentTheme === 'theme-red' }">
+                  <span class="theme-dot" style="background:#f5222d"></span>热情红
+                </el-dropdown-item>
+                <el-dropdown-item command="theme-green" :class="{ 'is-active-theme': currentTheme === 'theme-green' }">
+                  <span class="theme-dot" style="background:#52c41a"></span>清新绿
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          </div>
+
           <!-- 全屏 -->
           <el-tooltip :content="isFullscreen ? '退出全屏' : '全屏'" placement="bottom">
             <el-icon class="header-icon" @click="toggle">
@@ -246,7 +281,7 @@ const handleUserCommand = (command: string) => {
 
   /* 侧边栏 */
   .layout-aside {
-    background-color: #001529;
+    background-color: var(--sidebar-bg-color);
     transition: width 0.3s;
     overflow: hidden;
     display: flex;
@@ -258,11 +293,11 @@ const handleUserCommand = (command: string) => {
       align-items: center;
       justify-content: center;
       padding: 0 16px;
-      background-color: #002140;
+      background-color: var(--sidebar-logo-bg);
       overflow: hidden;
 
       .logo-icon {
-        color: #1890ff;
+        color: var(--el-color-primary);
         flex-shrink: 0;
       }
 
@@ -287,7 +322,7 @@ const handleUserCommand = (command: string) => {
 
       /* 激活菜单项样式 */
       .el-menu-item.is-active {
-        background-color: #1890ff !important;
+        background-color: var(--el-color-primary) !important;
       }
     }
 
@@ -299,7 +334,7 @@ const handleUserCommand = (command: string) => {
       color: rgba(255, 255, 255, 0.45);
       font-size: 13px;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-      background-color: #001529;
+      background-color: var(--sidebar-bg-color);
       flex-shrink: 0;
       white-space: nowrap;
     }
@@ -333,7 +368,7 @@ const handleUserCommand = (command: string) => {
           transition: color 0.3s;
 
           &:hover {
-            color: #1890ff;
+            color: var(--el-color-primary);
           }
         }
       }
@@ -354,7 +389,7 @@ const handleUserCommand = (command: string) => {
           transition: all 0.3s;
           
           &:hover {
-            color: #1890ff;
+            color: var(--el-color-primary);
             background-color: #f5f5f5;
           }
 
@@ -375,7 +410,7 @@ const handleUserCommand = (command: string) => {
           transition: color 0.3s;
 
           &:hover {
-            color: #1890ff;
+            color: var(--el-color-primary);
           }
         }
 
@@ -411,6 +446,19 @@ const handleUserCommand = (command: string) => {
   }
 }
 
+/* 主题颜色下拉选项内联圆点 */
+.theme-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.is-active-theme {
+  color: var(--el-color-primary) !important;
+  background-color: var(--el-color-primary-light-9);
+}
+
 /* 大屏网格面板 */
 .dashboard-cards-grid {
   display: grid;
@@ -432,13 +480,13 @@ const handleUserCommand = (command: string) => {
 
     &:hover {
       background: #fff;
-      border-color: #1890ff;
-      box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+      border-color: var(--el-color-primary);
+      box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15); /* Keep shadow blueish or change with var(--el-color-primary) with rgba would be hard without color-mix */
       transform: translateY(-2px);
 
       .card-icon-wrapper {
-        background: #e6f7ff;
-        color: #1890ff;
+        background: var(--el-color-primary-light-9, #e6f7ff);
+        color: var(--el-color-primary);
       }
     }
 

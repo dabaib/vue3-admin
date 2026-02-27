@@ -408,11 +408,9 @@ defineExpose({
         <!-- 操作按钮（紧跟查询框后面） -->
         <div class="json-search__actions" ref="actionsRef">
           <el-button type="primary" @click="handleSearch">
-            <el-icon><Search /></el-icon>
             {{ schema.searchText || '查询' }}
           </el-button>
           <el-button v-if="showResetBtn" @click="handleReset">
-            <el-icon><Refresh /></el-icon>
             {{ schema.resetText || '重置' }}
           </el-button>
           <el-button 

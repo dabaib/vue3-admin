@@ -162,9 +162,9 @@ const closeAllTags = () => {
       }
 
       &.active {
-        background-color: #1890ff;
+        background-color: var(--el-color-primary);
         color: #fff;
-        border-color: #1890ff;
+        border-color: var(--el-color-primary);
         
         &::before {
           content: '';

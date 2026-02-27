@@ -96,8 +96,8 @@ const tableSchema: TableSchema = {
     width: 200,
     fixed: 'right',
     buttons: [
-      { text: '编辑', type: 'primary', icon: 'Edit', event: 'edit' },
-      { text: '删除', type: 'danger', icon: 'Delete', event: 'delete', confirm: '确认删除？' }
+      { text: '编辑', type: 'primary', event: 'edit' },
+      { text: '删除', type: 'primary', event: 'delete', confirm: '确认删除？' }
     ]
   }
 }
@@ -240,7 +240,7 @@ const handleBatchDelete = () => {
       >
         <template #toolbar-left>
           <el-button type="primary" @click="handleAdd">
-            <el-icon><Plus /></el-icon>新增
+            新增
           </el-button>
           <el-button 
             type="danger" 
@@ -253,7 +253,7 @@ const handleBatchDelete = () => {
 
         <template #toolbar-right>
           <el-button @click="handleExport">
-            <el-icon><Download /></el-icon>导出
+            导出
           </el-button>
         </template>
       </JsonTable>
@@ -314,4 +314,6 @@ const handleBatchDelete = () => {
 1. **统一交互**: 新增和编辑尽量复用同一个弹窗和表单，通过 `dialogType` 区分逻辑。
 2. **表单重置**: 每次打开弹窗时，记得清空表单数据并调用 `clearValidate()`。
 3. **类型安全**: 充分利用 TS 类型提示，避免拼写错误。
-4. **样式统一**：强制列表页面使用page-container样式，且不允许修改模板page-container样式
+4. **样式统一**: 强制列表页面使用 `page-container` 样式，且不允许修改模板 `page-container` 样式。
+5. **极简设计**: 列表的操作栏以及各类功能按钮前面**默认不加系统图标**。
+6. **主题随动**: 操作栏（`actionColumn` 的 `buttons`）按钮及常用主按钮颜色，强制统一设置为 `type: 'primary'`（或者基于主色的 `link: true` 链接按键），禁止使用繁杂堆砌的颜色（如 `danger`, `warning` 等），确保皮肤切换时颜色一致性。

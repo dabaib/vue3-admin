@@ -82,7 +82,7 @@ const tableSchema: TableSchema = {
     'row-key': 'id'
   },
   columns: [
-    { type: 'selection', prop: 'selection', width: 50 },
+    { type: 'selection', prop: 'selection', label: '', width: 50 },
     { type: 'index', prop: 'index', label: '序号', width: 60, align: 'center' },
     { prop: 'name', label: '角色名称', minWidth: 120 },
     { prop: 'code', label: '角色编码', width: 150 },
@@ -109,7 +109,7 @@ const tableSchema: TableSchema = {
     buttons: [
       { text: '权限设置', type: 'primary', event: 'permission' },
       { text: '编辑', type: 'primary', event: 'edit' },
-      { text: '删除', type: 'danger', event: 'delete', confirm: '确认删除该角色吗？' }
+      { text: '删除', type: 'primary', event: 'delete', confirm: '确认删除该角色吗？' }
     ]
   }
 }
@@ -314,7 +314,7 @@ const isCodeReadonly = computed(() => dialogType.value === 'edit')
       >
         <template #toolbar-left>
           <el-button type="primary" @click="handleAdd">
-            <el-icon><Plus /></el-icon>新增
+            新增
           </el-button>
           <el-button
             type="danger"
@@ -327,7 +327,7 @@ const isCodeReadonly = computed(() => dialogType.value === 'edit')
 
         <template #toolbar-right>
           <el-button @click="handleExport">
-            <el-icon><Download /></el-icon>导出
+            导出
           </el-button>
         </template>
       </JsonTable>

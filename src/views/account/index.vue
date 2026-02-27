@@ -91,9 +91,9 @@ const tableSchema: TableSchema = {
     width: 240,
     fixed: 'right',
     buttons: [
-      { text: '编辑', type: 'primary', icon: 'Edit', event: 'edit' },
-      { text: '重置密码', type: 'warning', icon: 'Key', event: 'resetPwd', confirm: '确认重置该用户的密码吗？' },
-      { text: '删除', type: 'danger', icon: 'Delete', event: 'delete', confirm: '确认删除该用户吗？' }
+      { text: '编辑', type: 'primary', event: 'edit' },
+      { text: '重置密码', type: 'primary', event: 'resetPwd', confirm: '确认重置该用户的密码吗？' },
+      { text: '删除', type: 'primary', event: 'delete', confirm: '确认删除该用户吗？' }
     ]
   }
 }
@@ -244,7 +244,7 @@ const handleBatchDelete = () => {
         <!-- 左侧工具栏 -->
         <template #toolbar-left>
           <el-button type="primary" @click="handleAdd">
-            <el-icon><Plus /></el-icon>新增用户
+            新增用户
           </el-button>
           <el-button 
             type="danger" 
@@ -258,7 +258,7 @@ const handleBatchDelete = () => {
         <!-- 右侧工具栏 -->
         <template #toolbar-right>
           <el-button @click="handleExport">
-            <el-icon><Download /></el-icon>导出
+            导出
           </el-button>
         </template>
       </JsonTable>

@@ -468,7 +468,10 @@ defineExpose({
   &__toolbar-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+
+    .el-button + .el-button {
+      margin-left: 8px;
+    }
   }
 
   &__body {

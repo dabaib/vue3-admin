@@ -5,7 +5,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -24,12 +25,12 @@ html, body {
 /* 链接样式 */
 a {
   text-decoration: none;
-  color: #409eff;
+  color: var(--el-color-primary);
   transition: color 0.3s;
 }
 
 a:hover {
-  color: #66b1ff;
+  color: var(--el-color-primary-light-3, #66b1ff);
 }
 
 /* 滚动条样式 */
@@ -69,4 +70,62 @@ a:hover {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* 主题 CSS 变量定义 */
+:root {
+  /* Default Theme (Blue) */
+  --el-color-primary: #1890ff;
+  --el-color-primary-light-3: #5db4ff;
+  --el-color-primary-light-5: #8cc8ff;
+  --el-color-primary-light-7: #badbff;
+  --el-color-primary-light-8: #d1e9ff;
+  --el-color-primary-light-9: #e6f4ff;
+  --el-color-primary-dark-2: #0958d9;
+  --sidebar-bg-color: #001529;
+  --sidebar-logo-bg: #002140;
+  --sidebar-text-color: #ffffffa6;
+  --sidebar-text-active: #fff;
+}
+
+:root.theme-blue {
+  --el-color-primary: #1890ff;
+  --el-color-primary-light-3: #5db4ff;
+  --el-color-primary-light-5: #8cc8ff;
+  --el-color-primary-light-7: #badbff;
+  --el-color-primary-light-8: #d1e9ff;
+  --el-color-primary-light-9: #e6f4ff;
+  --el-color-primary-dark-2: #0958d9;
+  --sidebar-bg-color: #001529;
+  --sidebar-logo-bg: #002140;
+  --sidebar-text-color: #ffffffa6;
+  --sidebar-text-active: #fff;
+}
+
+:root.theme-red {
+  --el-color-primary: #f5222d;
+  --el-color-primary-light-3: #f8646b;
+  --el-color-primary-light-5: #fa9095;
+  --el-color-primary-light-7: #fbbdc0;
+  --el-color-primary-light-8: #fcd3d5;
+  --el-color-primary-light-9: #ffe8e8;
+  --el-color-primary-dark-2: #cf1322;
+  --sidebar-bg-color: #2b0000;
+  --sidebar-logo-bg: #400000;
+  --sidebar-text-color: #ffccc7;
+  --sidebar-text-active: #fff;
+}
+
+:root.theme-green {
+  --el-color-primary: #52c41a;
+  --el-color-primary-light-3: #86d65e;
+  --el-color-primary-light-5: #a9e28d;
+  --el-color-primary-light-7: #ccedbb;
+  --el-color-primary-light-8: #ddf3d2;
+  --el-color-primary-light-9: #f6ffec;
+  --el-color-primary-dark-2: #389e0d;
+  --sidebar-bg-color: #002b15;
+  --sidebar-logo-bg: #004020;
+  --sidebar-text-color: #d9f7be;
+  --sidebar-text-active: #fff;
 }
