@@ -46,8 +46,25 @@ const toggleCollapse = () => {
 
 // 全屏切换
 import { useFullscreen } from '@vueuse/core'
+import TagsView from './components/TagsView.vue'
 
 const { isFullscreen, toggle } = useFullscreen()
+
+// 定义大屏/外部路由，这些路由将会在新标签页中打开
+const topRoutes = computed(() => {
+  return routes.filter(r => r.path !== '/' && r.meta?.menu !== false).map(r => {
+    return {
+      path: r.path.startsWith('/') ? r.path : `/${r.path}`,
+      title: r.meta?.title || r.name,
+      icon: r.meta?.icon || 'DataBoard'
+    }
+  })
+})
+
+const openDashboard = (path: string) => {
+  const routeUrl = router.resolve({ path })
+  window.open(routeUrl.href, '_blank')
+}
 
 // 处理菜单点击
 const handleMenuSelect = (index: string) => {
@@ -116,6 +133,11 @@ const handleUserCommand = (command: string) => {
           </el-menu-item>
         </template>
       </el-menu>
+
+      <!-- 侧边栏底部版本信息 -->
+      <div class="sidebar-footer" v-show="!isCollapse">
+        <span>v1.0.0</span>
+      </div>
     </el-aside>
 
     <!-- 右侧内容区 -->
@@ -139,6 +161,29 @@ const handleUserCommand = (command: string) => {
         </div>
 
         <div class="header-right">
+          <!-- 大屏空间 -->
+          <el-popover placement="bottom-end" :width="320" trigger="hover" :offset="12">
+            <template #reference>
+              <div class="header-action-item">
+                <el-icon class="header-icon"><DataBoard /></el-icon>
+                <span class="action-text">数据大屏</span>
+              </div>
+            </template>
+            <div class="dashboard-cards-grid">
+              <div 
+                v-for="item in topRoutes" 
+                :key="item.path"
+                class="dash-card" 
+                @click="openDashboard(item.path)"
+              >
+                <div class="card-icon-wrapper">
+                  <el-icon class="card-icon"><component :is="item.icon" /></el-icon>
+                </div>
+                <span class="card-title">{{ item.title }}</span>
+              </div>
+            </div>
+          </el-popover>
+
           <!-- 全屏 -->
           <el-tooltip :content="isFullscreen ? '退出全屏' : '全屏'" placement="bottom">
             <el-icon class="header-icon" @click="toggle">
@@ -176,17 +221,19 @@ const handleUserCommand = (command: string) => {
         </div>
       </el-header>
 
-
+      <!-- 标签导航 -->
+      <TagsView />
 
       <!-- 主内容区 -->
       <el-main class="layout-content">
-        <RouterView />
+        <RouterView v-slot="{ Component, route }">
+          <transition name="fade-transform" mode="out-in">
+            <keep-alive>
+              <component :is="Component" :key="route.path" />
+            </keep-alive>
+          </transition>
+        </RouterView>
       </el-main>
-
-      <!-- 底部 -->
-      <el-footer class="layout-footer">
-        <span>Copyright © 2024 Vue3 Admin. All Rights Reserved.</span>
-      </el-footer>
     </el-container>
   </el-container>
 </template>
@@ -202,6 +249,8 @@ const handleUserCommand = (command: string) => {
     background-color: #001529;
     transition: width 0.3s;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     
     .logo-container {
       height: 60px;
@@ -228,7 +277,8 @@ const handleUserCommand = (command: string) => {
 
     .layout-menu {
       border-right: none;
-      height: calc(100vh - 60px);
+      flex: 1;
+      height: 0; // Trigger flex growing
       overflow-y: auto;
 
       &:not(.el-menu--collapse) {
@@ -239,6 +289,19 @@ const handleUserCommand = (command: string) => {
       .el-menu-item.is-active {
         background-color: #1890ff !important;
       }
+    }
+
+    .sidebar-footer {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 13px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      background-color: #001529;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
   }
 
@@ -280,6 +343,31 @@ const handleUserCommand = (command: string) => {
         align-items: center;
         gap: 20px;
 
+        .header-action-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          cursor: pointer;
+          color: #666;
+          padding: 6px 10px;
+          border-radius: 4px;
+          transition: all 0.3s;
+          
+          &:hover {
+            color: #1890ff;
+            background-color: #f5f5f5;
+          }
+
+          .header-icon {
+            font-size: 18px;
+          }
+
+          .action-text {
+            font-size: 14px;
+            font-weight: 500;
+          }
+        }
+
         .header-icon {
           font-size: 18px;
           cursor: pointer;
@@ -320,16 +408,63 @@ const handleUserCommand = (command: string) => {
       padding: 16px;
       overflow-y: auto;
     }
+  }
+}
 
-    /* 底部 */
-    .layout-footer {
+/* 大屏网格面板 */
+.dashboard-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 8px;
+
+  .dash-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 12px;
+    background: #f8fafc;
+    border: 1px solid #e1e7ef;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      background: #fff;
+      border-color: #1890ff;
+      box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+      transform: translateY(-2px);
+
+      .card-icon-wrapper {
+        background: #e6f7ff;
+        color: #1890ff;
+      }
+    }
+
+    .card-icon-wrapper {
+      width: 48px;
       height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #999;
+      background: #eef2f6;
+      border-radius: 12px;
+      color: #64748b;
+      margin-bottom: 12px;
+      transition: all 0.3s;
+
+      .card-icon {
+        font-size: 24px;
+      }
+    }
+
+    .card-title {
       font-size: 14px;
-      background-color: #fff;
+      font-weight: 500;
+      color: #334155;
+      text-align: center;
+      word-break: break-all;
     }
   }
 }

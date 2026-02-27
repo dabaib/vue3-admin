@@ -24,4 +24,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server: {
+    host: '0.0.0.0', // 监听所有地址，包括局域网真实的 IP
+    port: 5173,      // 默认端口，可以根据需要修改
+  },
 })
