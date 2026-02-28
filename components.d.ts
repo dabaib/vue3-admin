@@ -74,6 +74,7 @@ declare module 'vue' {
     JsonSearch: typeof import('./src/components/JsonSearch/JsonSearch.vue')['default']
     JsonTable: typeof import('./src/components/JsonTable/JsonTable.vue')['default']
     JsonTreeSelect: typeof import('./src/components/JsonTreeSelect/index.vue')['default']
+    OrgTree: typeof import('./src/components/org-tree/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
