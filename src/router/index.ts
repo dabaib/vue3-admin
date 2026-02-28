@@ -55,10 +55,22 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/views/account/index.vue'),
         meta: {
           title: '账号管理',
+          icon: 'UserFilled',
+          menu: true
+        }
+      },
+
+      {
+        path: 'user',
+        name: 'user-manager',
+        component: () => import('@/views/user-manager/index.vue'),
+        meta: {
+          title: '用户管理',
           icon: 'User',
           menu: true
         }
       },
+
       {
         path: 'role',
         name: 'role-manager',

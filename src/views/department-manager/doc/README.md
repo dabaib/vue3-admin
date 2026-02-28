@@ -1,81 +1,45 @@
-# 部门管理 (Department Management) - 详细设计文档
+# 部门管理 (Department Manager) - 详细设计文档
 
 ## 1. 背景与目标
-此功能旨在解决企业内部层级化的人员组织问题，支持复杂的树形结构展示与操作。
+实现后台系统的部门管理功能，维护企业的组织架构树。提供一个直观的配置界面，用于展示包含多级子部门的层级数据，并支持新增、编辑、删除操作。
 
 ## 2. 功能概述
-本模块将实现一个支持无限层级的树形部门管理界面，允许用户进行查看、创建、编辑、删除和排序部门。
-
-核心特性：
-- **树形数据展示**: 直观展示部门的父子层级关系。
-- **部门负责人关联**: 每个部门可指定主管（关联到现有账号）。
-- **状态管理**: 控制部门的启用/停用状态。
-- **拖拽/排序**: (可选) 支持调整同级部门的显示顺序。
+- **树形表格列表**:
+  - 全量请求或懒加载展示完整的部门层级结构。
+  - 父部门包含折叠展示控制。
+- **查询过滤**:
+  - 提供部门名称的模糊匹配。
+  - 提供启/停用状态筛选。
+- **操作交互**:
+  - 在指定父级下快速创建子级。
+  - 编辑当前节点的信息。
+  - 控制有无下级时的删除权限。
 
 ## 3. 详细需求
 
 ### 3.1 页面布局
-- **布局结构**: 标准 CRUD 布局。
-  - **搜索栏**: 支持按“部门名称”或“状态”筛选。
-  - **工具栏**: “新增部门”按钮。
-  - **主内容区**: 树形表格 (Tree Table)。
+- 标准复用 `.page-container` 布局方案。
+- 上方为 `JsonSearch`，下方为启用了 `row-key` 实现树状特性的 `JsonTable`。
 
-### 3.2 数据列表 (Tree Table)
-字段定义：
-- **部门名称** (Name): 显示部门名称，缩进展示层级。
-- **排序** (Sort): 数字，越小越靠前。
-- **状态** (Status): 启用/停用 (Switch/Tag)。
-- **部门负责人** (Leader): 显示负责人姓名。
-- **创建时间** (Create Time): 格式化时间字符串。
+### 3.2 数据列表 (Table)
+- **部门名称** (name): 层叠展示列。
+- **排序** (sort): 数值，展示展示层级控制权。
+- **状态** (status): 使用 Tag 展示启停状态。
+- **创建时间** (createTime): 展示建立日期。
 - **操作列**:
-  - **新增子部门**: 点击直接弹出预填父部门的弹窗。
-  - **编辑**: 修改部门详情。
-  - **删除**: 删除部门（需校验是否有下级部门或关联人员）。
+  - 新增下级 (`handleAppend`)
+  - 编辑 (`handleEdit`)
+  - 删除 (`handleDelete`) (有下级应禁止或后端拦截)
 
 ### 3.3 编辑/新增表单 (Dialog)
-表单字段：
-- **上级部门** (Parent): `TreeSelect` 组件，选择父节点（根部门则为空）。
-- **部门名称** (Name): 必填，文本输入。
-- **部门编码** (Code): 必填，唯一标识，比如 `DEPT_001`。
-- **负责人** (Leader): `Select` 组件，下拉选择系统用户 (模拟数据)。
-- **排序** (Sort): `InputNumber`，默认 0。
-- **状态** (Status): `Radio` / `Switch`，默认启用。
-- **备注** (Description): 文本域。
+- **上级部门** (parentId): 必填。通常应提供 Cascader（级联选择器）或下拉树（TreeSelect）。顶级部门值为 "0" 或空。为了简便在 Mock 项目中可以下拉选择或自动取触发 `handleAppend` 的父级节点 ID。
+- **名称** (name): 必填项。
+- **显示排序** (sort): 必填，数字输入。
+- **状态** (status): 单选，默认启用。
 
-## 4. 数据模型设计 (Mock)
-
-```typescript
-interface Department {
-  id: string;
-  parentId: string | null;
-  name: string;
-  code: string;
-  leader: string; // 负责人 User ID 或 Name
-  status: 'enable' | 'disable';
-  sort: number;
-  createTime: string;
-  children?: Department[]; // 树形结构必须
-}
-```
-
-## 5. 组件架构
-遵循项目宪章的目录规范：
-
-```text
-src/views/department-manager/
-├── README.md           # 本设计文档
-├── index.vue           # 页面入口 (Container + Table)
-└── modules/            # 私有组件
-    ├── DepartmentForm.vue  # 新增/编辑 弹窗组件
-    └── DepartmentSearch.vue # (可选) 搜索栏组件
-```
-
-## 6. 技术实现细节
-1.  使用 Element Plus 的 `el-table` 的 `row-key` 和 `tree-props` 属性实现树形展示。
-2.  使用 `JsonDialog` 或 `el-dialog` 封装表单逻辑。
-3.  Mock 数据层需生成具有层级结构的 JSON 数据。
-4.  Typescript 类型定义需严格，优先复用现有公共类型。
-
-## 7. 后续扩展
-- 部门成员列表预览。
-- 部门维度的权限设置（Data Scope）。
+## 4. API 对接约束
+所涉及的请求与资源接口将统一从 `src/api/department` 映射：
+- `getDeptTree` (作为表格绑定的数据源)
+- `createDept`
+- `updateDept`
+- `deleteDept`
