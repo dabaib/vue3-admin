@@ -2,6 +2,7 @@
 import { ref, reactive, nextTick, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import DeptTree from './modules/DeptTree.vue'
+import AssignRoleDialog from './modules/AssignRoleDialog.vue'
 import JsonTable from '@/components/JsonTable'
 import JsonSearch from '@/components/JsonSearch'
 import JsonDialog from '@/components/JsonDialog'
@@ -28,11 +29,15 @@ const selectedRows = ref<User[]>([])
 // 部门列表（供表单下拉选择）
 const deptOptions = ref<{label: string, value: string}[]>([])
 
-// 弹窗
+// 编辑弹窗
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
 const dialogType = ref<'add' | 'edit'>('add')
 const confirmLoading = ref(false)
+
+// 分配角色弹窗
+const assignRoleVisible = ref(false)
+const assignRoleUser = ref<User | null>(null)
 
 // 表单数据
 const formData = ref<UserFormData>({
@@ -88,6 +93,7 @@ const tableSchema: TableSchema = {
     { prop: 'account', label: '账号', width: 120 },
     { prop: 'name', label: '姓名', minWidth: 100 },
     { prop: 'deptName', label: '所属部门', minWidth: 120 },
+    { prop: 'roleNames', label: '所属角色', minWidth: 150, showOverflowTooltip: true },
     { prop: 'phone', label: '手机号', width: 130 },
     {
       prop: 'status',
@@ -105,10 +111,11 @@ const tableSchema: TableSchema = {
     { prop: 'createTime', label: '创建时间', width: 180 }
   ],
   actionColumn: {
-    width: 150,
+    width: 210,
     fixed: 'right',
     buttons: [
       { text: '编辑', type: 'primary', link: true, event: 'edit' },
+      { text: '分配角色', type: 'primary', link: true, event: 'assign' },
       { text: '删除', type: 'primary', link: true, event: 'delete', confirm: '确认删除该用户吗？' }
     ]
   }
@@ -269,6 +276,10 @@ const handleAction = (event: string, row: User) => {
     case 'edit':
       handleEdit(row)
       break
+    case 'assign':
+      assignRoleUser.value = row
+      assignRoleVisible.value = true
+      break
     case 'delete':
       handleDelete(row)
       break
@@ -333,6 +344,13 @@ const handleSelectionChange = (rows: User[]) => {
         v-model="formData"
       />
     </JsonDialog>
+
+    <!-- 分配角色弹窗 -->
+    <AssignRoleDialog
+      v-model="assignRoleVisible"
+      :user="assignRoleUser"
+      @success="tableRef?.refresh()"
+    />
   </div>
 </template>
 

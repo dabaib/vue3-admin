@@ -6,6 +6,7 @@ export interface User {
     phone?: string;       // 手机号
     deptId?: string;      // 所属部门ID
     deptName?: string;    // 所属部门名称
+    roleNames?: string;   // 角色名称（逗号分隔）
     status: 'enable' | 'disable';
     createTime: string;
 }

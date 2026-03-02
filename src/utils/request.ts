@@ -10,14 +10,13 @@ const service: AxiosInstance = axios.create({
     }
 })
 
-// 请求拦截器
+// 请求拦截器：自动携带 JWT Token
 service.interceptors.request.use(
     (config) => {
-        // 可在此处添加 token
-        // const token = localStorage.getItem('token')
-        // if (token) {
-        //   config.headers.Authorization = `Bearer ${token}`
-        // }
+        const token = localStorage.getItem('token')
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`
+        }
         return config
     },
     (error) => {
@@ -25,19 +24,27 @@ service.interceptors.request.use(
     }
 )
 
-// 响应拦截器
+// 响应拦截器：后端统一响应格式 { code: 0, msg, data }
 service.interceptors.response.use(
     (response: AxiosResponse) => {
         const { data } = response
-        // 根据实际后端响应结构调整
-        if (data.code === 200) {
+        // code === 0 表示成功
+        if (data.code === 0) {
             return data.data
-        } else {
-            ElMessage.error(data.msg || '请求失败')
-            return Promise.reject(new Error(data.msg || '请求失败'))
         }
+        // 401 跳转登录
+        if (data.code === 401) {
+            localStorage.removeItem('token')
+            window.location.href = '/login'
+        }
+        ElMessage.error(data.msg || '请求失败')
+        return Promise.reject(new Error(data.msg || '请求失败'))
     },
     (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token')
+            window.location.href = '/login'
+        }
         const message = error.response?.data?.msg || error.message || '网络错误'
         ElMessage.error(message)
         return Promise.reject(error)

@@ -1,8 +1,16 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 // 路由配置（菜单会根据这里自动生成）
 export const routes: RouteRecordRaw[] = [
 
+  // 登录页（独立路由，不套 AdminLayout）
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/index.vue'),
+    meta: { title: '登录', menu: false }
+  },
   {
     path: '/dashboard1',
     name: 'dashboard1',
@@ -46,17 +54,6 @@ export const routes: RouteRecordRaw[] = [
           title: '首页',
           icon: 'HomeFilled',
           menu: true  // 显示在菜单中
-        }
-      },
-
-      {
-        path: 'account',
-        name: 'account',
-        component: () => import('@/views/account/index.vue'),
-        meta: {
-          title: '账号管理',
-          icon: 'UserFilled',
-          menu: true
         }
       },
 
@@ -154,6 +151,31 @@ export const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
+})
+
+// 不需要验证登录的白名单路由名称
+const whiteList = ['login']
+
+/**
+ * 全局路由守卫
+ * - 未登录且不在白名单 → 跳转 /login
+ * - 已登录且访问 /login → 跳转首页
+ */
+router.beforeEach((to, _from, next) => {
+  const authStore = useAuthStore()
+  if (whiteList.includes(to.name as string)) {
+    // 已登录则无需再去登录页
+    if (authStore.isLoggedIn()) {
+      next({ name: 'home' })
+    } else {
+      next()
+    }
+  } else if (!authStore.isLoggedIn()) {
+    // 未登录，记录目标页并重定向到登录
+    next({ name: 'login', query: { redirect: to.fullPath } })
+  } else {
+    next()
+  }
 })
 
 export default router

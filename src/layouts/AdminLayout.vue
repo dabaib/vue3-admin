@@ -1,19 +1,31 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, watch, onMounted } from 'vue'
 import { useRouter, useRoute, type RouteRecordRaw } from 'vue-router'
 import { routes } from '@/router'
+import { useAuthStore } from '@/stores/auth'
+import { useRouteSync } from '@/composables/useRouteSync'
 
 // 路由
 const router = useRouter()
 const route = useRoute()
 
+// 用户 Store
+const authStore = useAuthStore()
+
 // 侧边栏折叠状态
 const isCollapse = defineModel<boolean>('collapse', { default: false })
 
-// 用户信息
-const userInfo = {
-  name: '管理员',
-  avatar: 'https://picsum.photos/100/100?random=user'
+// 从 Store 获取真实用户信息
+const userInfo = computed(() => ({
+  name: authStore.userInfo?.name ?? '未登录',
+  avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${authStore.userInfo?.name ?? 'A'}`
+}))
+
+// 权限判断函数
+const hasPermission = (routeName: string | symbol | undefined) => {
+  if (!routeName) return true
+  const perms = authStore.userInfo?.permissions || []
+  return perms.includes(String(routeName))
 }
 
 // 从路由配置中自动生成菜单
@@ -23,17 +35,25 @@ const menuList = computed(() => {
   if (!layoutRoute?.children) return []
   
   return layoutRoute.children
-    .filter(child => child.meta?.menu !== false) // 过滤掉不显示的菜单
-    .map(child => ({
-      index: child.path === '' ? '/' : `/${child.path}`,
-      title: (child.meta?.title as string) || child.name?.toString() || '',
-      icon: (child.meta?.icon as string) || 'Document',
-      children: child.children?.filter(c => c.meta?.menu !== false).map(c => ({
-        index: `/${child.path}/${c.path}`,
-        title: (c.meta?.title as string) || c.name?.toString() || '',
-        icon: (c.meta?.icon as string) || 'Document'
-      }))
-    }))
+    .filter(child => child.meta?.menu !== false && hasPermission(child.name)) // 过滤掉不显示及无权限的菜单
+    .map(child => {
+      const childrenList = child.children?.filter(c => c.meta?.menu !== false && hasPermission(c.name))
+      return {
+        index: child.path === '' ? '/' : `/${child.path}`,
+        title: (child.meta?.title as string) || child.name?.toString() || '',
+        icon: (child.meta?.icon as string) || 'Document',
+        children: childrenList?.map(c => ({
+          index: `/${child.path}/${c.path}`,
+          title: (c.meta?.title as string) || c.name?.toString() || '',
+          icon: (c.meta?.icon as string) || 'Document'
+        }))
+      }
+    })
+    .filter(item => {
+      // 若该菜单配置了子节点，但过滤后一个都不剩，就不显示该父节点
+      if (item.children && item.children.length === 0) return false
+      return true
+    })
 })
 
 // 当前激活菜单
@@ -63,13 +83,15 @@ watch(currentTheme, (val) => {
 
 // 定义大屏/外部路由，这些路由将会在新标签页中打开
 const topRoutes = computed(() => {
-  return routes.filter(r => r.path !== '/' && r.meta?.menu !== false).map(r => {
-    return {
-      path: r.path.startsWith('/') ? r.path : `/${r.path}`,
-      title: r.meta?.title || r.name,
-      icon: r.meta?.icon || 'DataBoard'
-    }
-  })
+  return routes
+    .filter(r => r.path !== '/' && r.meta?.menu !== false && hasPermission(r.name))
+    .map(r => {
+      return {
+        path: r.path.startsWith('/') ? r.path : `/${r.path}`,
+        title: r.meta?.title || r.name,
+        icon: r.meta?.icon || 'DataBoard'
+      }
+    })
 })
 
 const openDashboard = (path: string) => {
@@ -83,7 +105,7 @@ const handleMenuSelect = (index: string) => {
 }
 
 // 处理用户下拉菜单
-const handleUserCommand = (command: string) => {
+const handleUserCommand = async (command: string) => {
   switch (command) {
     case 'profile':
       console.log('个人中心')
@@ -92,11 +114,18 @@ const handleUserCommand = (command: string) => {
       console.log('设置')
       break
     case 'logout':
-      console.log('退出登录')
+      await authStore.logout()
       break
   }
 }
 
+// 超管登录时自动同步路由到菜单权限表（路由即数据源）
+onMounted(() => {
+  const userId = authStore.userInfo?.userId
+  if (userId === 1) {
+    useRouteSync()
+  }
+})
 </script>
 
 <template>
