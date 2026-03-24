@@ -2,65 +2,94 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { User, Lock, Loading } from '@element-plus/icons-vue'
-import { useAuthStore } from '@/stores/auth'
+import { User, Lock, EditPen } from '@element-plus/icons-vue'
+import { register } from '@/api/auth'
+import type { RegisterForm } from '@/api/auth'
+import type { FormInstance, FormRules } from 'element-plus'
 
 const router = useRouter()
-const authStore = useAuthStore()
 
-// 登录表单 ref
-const formRef = ref()
+// 注册表单 ref
+const formRef = ref<FormInstance>()
 
 // 表单数据
-const form = reactive({
-    account: 'admin',
-    password: '123456'
+const form = reactive<RegisterForm>({
+    account: '',
+    name: '',
+    password: '',
+    confirmPassword: ''
 })
 
 // 加载状态
 const loading = ref(false)
 
-// 表单校验规则
-const rules = {
-    account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-    password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+// 自定义校验：确认密码
+const validateConfirmPassword = (rule: any, value: string, callback: any) => {
+    if (value === '') {
+        callback(new Error('请再次输入密码'))
+    } else if (value !== form.password) {
+        callback(new Error('两次输入密码不一致!'))
+    } else {
+        callback()
+    }
 }
 
+// 表单校验规则
+const rules = reactive<FormRules<RegisterForm>>({
+    account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+    name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+    password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, message: '密码长度不能小于6位', trigger: 'blur' }
+    ],
+    confirmPassword: [
+        { required: true, validator: validateConfirmPassword, trigger: 'blur' }
+    ]
+})
+
 /**
- * 提交登录
+ * 提交注册
  */
-const handleLogin = async () => {
-    await formRef.value?.validate()
-    loading.value = true
-    try {
-        await authStore.login({ account: form.account, password: form.password })
-        ElMessage.success('登录成功')
-        // 跳转到首页（或 redirect 参数指定的页面）
-        const redirect = (router.currentRoute.value.query.redirect as string) || '/'
-        router.push(redirect)
-    } catch {
-        // 错误已由 request 拦截器统一 ElMessage 提示，此处不重复处理
-    } finally {
-        loading.value = false
-    }
+const handleRegister = async () => {
+    if (!formRef.value) return
+    await formRef.value.validate(async (valid) => {
+        if (valid) {
+            loading.value = true
+            try {
+                await register(form)
+                ElMessage.success('注册成功，请登录！')
+                router.push('/login')
+            } catch (error: any) {
+                // 如果没有全局请求拦截器捕获错误，需要在这里处理
+                // ElMessage.error(error.message || '注册失败')
+            } finally {
+                loading.value = false
+            }
+        }
+    })
 }
 
 /** 回车提交 */
 const handleKeydown = (event: KeyboardEvent) => {
-    if (event.key === 'Enter') handleLogin()
+    if (event.key === 'Enter') handleRegister()
+}
+
+/** 返回登录 */
+const goLogin = () => {
+    router.push('/login')
 }
 </script>
 
 <template>
     <div class="login-page">
-        <!-- 背景装饰 -->
+        <!-- 背景装饰 (复用登录页装饰) -->
         <div class="bg-decoration">
             <div class="circle circle-1"></div>
             <div class="circle circle-2"></div>
             <div class="circle circle-3"></div>
         </div>
 
-        <!-- 登录卡片 -->
+        <!-- 注册卡片 -->
         <div class="login-card">
             <!-- 左侧品牌区 -->
             <div class="login-brand">
@@ -77,20 +106,12 @@ const handleKeydown = (event: KeyboardEvent) => {
                         <circle cx="40" cy="42" r="6" fill="white"/>
                     </svg>
                 </div>
-                <h1 class="brand-name">Vue3 Admin</h1>
-                <p class="brand-desc">高性能 · 可维护 · 极致体验</p>
+                <h1 class="brand-name">新用户注册</h1>
+                <p class="brand-desc">加入我们，体验极致后台管理系统</p>
                 <div class="brand-features">
                     <div class="feature-item">
                         <span class="feature-dot"></span>
-                        <span>Vue 3.5 + TypeScript</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-dot"></span>
-                        <span>Spring Boot 3 后端</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-dot"></span>
-                        <span>RBAC 权限管理</span>
+                        <span>快速开通账号权限</span>
                     </div>
                 </div>
             </div>
@@ -98,8 +119,8 @@ const handleKeydown = (event: KeyboardEvent) => {
             <!-- 右侧表单区 -->
             <div class="login-form-wrap">
                 <div class="form-header">
-                    <h2>欢迎回来</h2>
-                    <p>请输入您的账号和密码登录系统</p>
+                    <h2>创建您的账号</h2>
+                    <p>请填写以下信息完成注册</p>
                 </div>
 
                 <el-form
@@ -112,10 +133,20 @@ const handleKeydown = (event: KeyboardEvent) => {
                     <el-form-item prop="account">
                         <el-input
                             v-model="form.account"
-                            placeholder="请输入账号"
+                            placeholder="请设置新账号"
                             size="large"
                             clearable
                             :prefix-icon="User"
+                        />
+                    </el-form-item>
+
+                    <el-form-item prop="name">
+                        <el-input
+                            v-model="form.name"
+                            placeholder="请输入您的姓名"
+                            size="large"
+                            clearable
+                            :prefix-icon="EditPen"
                         />
                     </el-form-item>
 
@@ -123,9 +154,22 @@ const handleKeydown = (event: KeyboardEvent) => {
                         <el-input
                             v-model="form.password"
                             type="password"
-                            placeholder="请输入密码"
+                            placeholder="请设置密码 (最少6位)"
                             size="large"
                             show-password
+                            clearable
+                            :prefix-icon="Lock"
+                        />
+                    </el-form-item>
+
+                    <el-form-item prop="confirmPassword">
+                        <el-input
+                            v-model="form.confirmPassword"
+                            type="password"
+                            placeholder="请再次确认密码"
+                            size="large"
+                            show-password
+                            clearable
                             :prefix-icon="Lock"
                         />
                     </el-form-item>
@@ -136,16 +180,15 @@ const handleKeydown = (event: KeyboardEvent) => {
                             type="primary"
                             size="large"
                             :loading="loading"
-                            @click="handleLogin"
+                            @click="handleRegister"
                         >
-                            {{ loading ? '登录中...' : '立即登录' }}
+                            {{ loading ? '注册中...' : '立刻注册' }}
                         </el-button>
                     </el-form-item>
                 </el-form>
 
                 <div class="login-tips">
-                    <p>默认账号：<strong>admin</strong> / <strong>123456</strong></p>
-                    <p style="margin-top: 10px;">没有账号？ <a href="javascript:void(0)" @click="router.push('/register')">立刻注册</a></p>
+                    <p>已有账号？ <a href="javascript:void(0)" @click="goLogin">返回登录</a></p>
                 </div>
             </div>
         </div>
@@ -209,7 +252,7 @@ const handleKeydown = (event: KeyboardEvent) => {
     50% { transform: translateY(-20px) scale(1.05); }
 }
 
-/* 登录卡片 */
+/* 登录卡片 (复用样式体系) */
 .login-card {
     display: flex;
     width: 880px;
@@ -302,7 +345,7 @@ const handleKeydown = (event: KeyboardEvent) => {
     justify-content: center;
 
     .form-header {
-        margin-bottom: 36px;
+        margin-bottom: 30px;
 
         h2 {
             font-size: 26px;
@@ -348,23 +391,19 @@ const handleKeydown = (event: KeyboardEvent) => {
         border: none;
         letter-spacing: 1px;
         transition: opacity 0.2s, transform 0.1s;
+        margin-top: 10px;
 
         &:hover { opacity: 0.92; transform: translateY(-1px); }
         &:active { transform: translateY(0); }
     }
 
     .login-tips {
-        margin-top: 20px;
+        margin-top: 16px;
         text-align: center;
 
         p {
-            font-size: 13px;
-            color: var(--el-text-color-placeholder);
-        }
-
-        strong {
-            color: var(--el-color-primary);
-            font-weight: 600;
+            font-size: 14px;
+            color: var(--el-text-color-regular);
         }
 
         a {

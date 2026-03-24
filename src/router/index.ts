@@ -11,6 +11,13 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/login/index.vue'),
     meta: { title: '登录', menu: false }
   },
+  // 注册页
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/views/register/index.vue'),
+    meta: { title: '注册', menu: false }
+  },
   {
     path: '/dashboard1',
     name: 'dashboard1',
@@ -154,7 +161,7 @@ const router = createRouter({
 })
 
 // 不需要验证登录的白名单路由名称
-const whiteList = ['login']
+const whiteList = ['login', 'register']
 
 /**
  * 全局路由守卫

@@ -6,6 +6,14 @@ export interface LoginParams {
     password: string
 }
 
+/** 注册请求参数 */
+export interface RegisterForm {
+    account: string
+    name: string
+    password: string
+    confirmPassword: string
+}
+
 /** 登录响应数据 */
 export interface LoginResult {
     token: string
@@ -20,6 +28,13 @@ export interface LoginResult {
  */
 export function login(data: LoginParams): Promise<LoginResult> {
     return request.post('/auth/login', data)
+}
+
+/**
+ * 用户注册
+ */
+export function register(data: RegisterForm): Promise<void> {
+    return request.post('/auth/register', data)
 }
 
 /**
